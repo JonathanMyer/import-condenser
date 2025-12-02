@@ -18,134 +18,6 @@ local LibDualSpec   = LibStub("LibDualSpec-1.0", true)
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
-local function JsonToTable(json)
-    local pos = 1
-    local function skipWhitespace()
-        while pos <= #json and string.find(json:sub(pos, pos), '%s') do
-            pos = pos + 1
-        end
-    end
-    local function parseString()
-        local start = pos + 1
-        local i = start
-        while i <= #json do
-            local c = json:sub(i, i)
-            if c == '"' and json:sub(i-1, i-1) ~= '\\' then
-                local str = json:sub(start, i-1)
-                pos = i + 1
-                return str
-            end
-            i = i + 1
-        end
-        return nil, "Unterminated string"
-    end
-    local function parseNumber()
-        local start = pos
-        while pos <= #json and json:sub(pos, pos):match('[%d%.%-]') do
-            pos = pos + 1
-        end
-        local num = tonumber(json:sub(start, pos-1))
-        if num == nil then return nil, "Invalid number" end
-        return num
-    end
-    local parseValue -- forward declaration
-
-    local function parseObject()
-        local obj = {}
-        pos = pos + 1 -- skip '{'
-        skipWhitespace()
-        while pos <= #json and json:sub(pos, pos) ~= '}' do
-            skipWhitespace()
-            local key, err = parseString()
-            if not key then return nil, err or "Invalid object key" end
-            skipWhitespace()
-            if json:sub(pos, pos) == ':' then pos = pos + 1 end
-            skipWhitespace()
-            local value, verr = parseValue()
-            if verr then return nil, verr end
-            obj[key] = value
-            skipWhitespace()
-            if json:sub(pos, pos) == ',' then pos = pos + 1 end
-            skipWhitespace()
-        end
-        pos = pos + 1 -- skip '}'
-        return obj
-    end
-
-    local function parseArray()
-        local arr = {}
-        pos = pos + 1 -- skip '['
-        skipWhitespace()
-        while pos <= #json and json:sub(pos, pos) ~= ']' do
-            skipWhitespace()
-            local value, err = parseValue()
-            if err then return nil, err end
-            table.insert(arr, value)
-            skipWhitespace()
-            if json:sub(pos, pos) == ',' then pos = pos + 1 end
-            skipWhitespace()
-        end
-        pos = pos + 1 -- skip ']'
-        return arr
-    end
-
-    parseValue = function()
-        skipWhitespace()
-        local char = json:sub(pos, pos)
-        if char == '{' then
-            return parseObject()
-        elseif char == '[' then
-            return parseArray()
-        elseif char == '"' then
-            return parseString()
-        elseif char:match('[%d%-]') then
-            return parseNumber()
-        elseif json:sub(pos, pos+3) == 'true' then
-            pos = pos + 4
-            return true
-        elseif json:sub(pos, pos+4) == 'false' then
-            pos = pos + 5
-            return false
-        elseif json:sub(pos, pos+3) == 'null' then
-            pos = pos + 4
-            return nil
-        else
-            return nil, "Unexpected character '" .. char .. "' at position " .. pos
-        end
-    end
-    local result, err = parseValue()
-    skipWhitespace()
-    if pos <= #json then
-        return nil, "Extra data after valid JSON: '" .. json:sub(pos) .. "'"
-    end
-    return result, err
-end
-
-local function tableToJson(tbl)
-    local function escape_str(s)
-        s = string.gsub(s, '\\', '\\\\')
-        s = string.gsub(s, '"', '\\"')
-        s = string.gsub(s, '\n', '\\n')
-        return '"' .. s .. '"'
-    end
-    local function serialize(obj)
-        if type(obj) == "table" then
-            local result = {}
-            for k, v in pairs(obj) do
-                local key = type(k) == "string" and escape_str(k) or tostring(k)
-                table.insert(result,  key .. ":" .. serialize(v))
-            end
-            return "{" .. table.concat(result, ",") .. "}"
-        elseif type(obj) == "string" then
-            return escape_str(obj)
-        elseif type(obj) == "number" or type(obj) == "boolean" then
-            return tostring(obj)
-        else
-            return 'null'
-        end
-    end
-    return serialize(tbl)
-end
 
 function ImportCondenser:OnInitialize()
     -- Called when the addon is loaded
@@ -238,7 +110,7 @@ end
 
 function ImportCondenser:Import(importStr)
     -- Attempt to parse and import immediately upon setting
-    local result, err = JsonToTable(importStr)
+    local result = C_EncodingUtil.DeserializeJSON(importStr)
     if result and type(result) == "table" then
         local profileName = result.profileName or "ImportedProfile"
         print("Starting import for profile: " .. profileName)
@@ -319,7 +191,7 @@ function ImportCondenser:GenerateExportString()
         end
     end
 
-    return tableToJson(exports)
+    return C_EncodingUtil.SerializeJSON(exports)
 end
 
 function ImportCondenser:DisplayTextFrame(title, text)
