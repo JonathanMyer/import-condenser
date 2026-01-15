@@ -121,6 +121,10 @@ function ImportCondenser:Import(importStr)
             ImportCondenser:ImportPlatynator(result["Platynator"], profileName)
         end
 
+        if result["Baganator"] then
+            ImportCondenser:ImportBaganator(result["Baganator"], profileName)
+        end
+
         print("Import successful for profile: " .. profileName)
     else
         print("Import failed: " .. (err or "Invalid format."))
@@ -135,6 +139,7 @@ function ImportCondenser:GenerateExportString()
     ImportCondenser:ExportNephUI(exports)
     ImportCondenser:ExportEditMode(exports)
     ImportCondenser:ExportPlatynator(exports)
+    ImportCondenser:ExportBaganator(exports)
 
     return C_EncodingUtil.SerializeJSON(exports)
 end
