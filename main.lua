@@ -181,8 +181,3 @@ function ImportCondenser:ShowExportWindow()
 
     self:DisplayTextFrame("Export", exportStr)
 end
-
-function ImportCondenser:ImportAddonSettings(addonName)
-    -- Placeholder: Implement actual import logic here
-    print("Importing settings for " .. (addonName or "Unknown Addon"))
-end
