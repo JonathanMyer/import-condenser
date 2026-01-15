@@ -117,8 +117,8 @@ function ImportCondenser:Import(importStr)
             ImportCondenser:ImportEditMode(result["EditMode"], profileName)
         end
 
-        if result["Platynatory"] then
-            ImportCondenser:ImportPlatynatory(result["Platynatory"], profileName)
+        if result["Platynator"] then
+            ImportCondenser:ImportPlatynator(result["Platynator"], profileName)
         end
 
         print("Import successful for profile: " .. profileName)
@@ -134,7 +134,7 @@ function ImportCondenser:GenerateExportString()
 
     ImportCondenser:ExportNephUI(exports)
     ImportCondenser:ExportEditMode(exports)
-    ImportCondenser:ExportPlatynatory(exports)
+    ImportCondenser:ExportPlatynator(exports)
 
     return C_EncodingUtil.SerializeJSON(exports)
 end
