@@ -141,6 +141,11 @@ function ImportCondenser:Import(importStr)
             end
         end
 
+        if result["CooldownViewer"] and C_CooldownViewer then
+            print("Importing CooldownViewer layout")
+            C_CooldownViewer.SetLayoutData(result["CooldownViewer"])
+        end
+
         if result["Platynatory"] then
             ImportCondenser:ImportPlatynatory(result["Platynatory"], profileName)
         end
@@ -198,6 +203,14 @@ function ImportCondenser:GenerateExportString()
                 local activeLayoutInfo = layouts.layouts[layoutNumber - 2]
                 exports["EditMode"] = C_EditMode.ConvertLayoutInfoToString(activeLayoutInfo)
             end
+        end
+    end
+
+    -- CooldownViewer
+    if C_CooldownViewer and type(C_CooldownViewer.GetLayoutData) == "function" then
+        local layout = C_CooldownViewer.GetLayoutData()
+        if layout then
+            exports["CooldownViewer"] = layout
         end
     end
 
