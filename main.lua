@@ -141,6 +141,9 @@ function ImportCondenser:Import(importStr)
             end
         end
 
+        if result["Platynatory"] then
+            ImportCondenser:ImportPlatynatory(result["Platynatory"], profileName)
+        end
 
         print("Import successful for profile: " .. profileName)
     else
@@ -168,6 +171,13 @@ function ImportCondenser:ImportNephUI(profileName, importStr)
     end
 end
 
+function ImportCondenser:ImportPlatynatory(importString, profileName)
+    _G.PLATYNATOR_CONFIG = _G.PLATYNATOR_CONFIG or {}
+    _G.PLATYNATOR_CONFIG.Profiles = _G.PLATYNATOR_CONFIG.Profiles or {}
+    _G.PLATYNATOR_CONFIG.Profiles[profileName] = importString
+    _G.PLATYNATOR_CURRENT_PROFILE = profileName
+  end
+
 function ImportCondenser:GenerateExportString()
     local profileName = self.db.global.profileName or "DefaultProfile"
     local exports = {profileName = profileName}
@@ -188,6 +198,13 @@ function ImportCondenser:GenerateExportString()
                 local activeLayoutInfo = layouts.layouts[layoutNumber - 2]
                 exports["EditMode"] = C_EditMode.ConvertLayoutInfoToString(activeLayoutInfo)
             end
+        end
+    end
+
+    if _G.PLATYNATOR_CONFIG and _G.PLATYNATOR_CONFIG.Profiles then
+        local platynatorProfile = _G.PLATYNATOR_CONFIG.Profiles[_G.PLATYNATOR_CURRENT_PROFILE]
+        if platynatorProfile then
+            exports["Platynatory"] = platynatorProfile
         end
     end
 
