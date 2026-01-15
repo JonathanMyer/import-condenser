@@ -5,9 +5,7 @@ function ImportCondenser:ImportEditMode(importString, profileName)
     local layout = C_EditMode.ConvertStringToLayoutInfo(importString)
     layout.layoutName = profileName
     layout.layoutType = 1 -- set to account layout
-    self:AddToInspector(layout, "Imported Layout")
     local layouts = C_EditMode.GetLayouts()
-    self:AddToInspector(layouts, "EditMode Layouts Before Import")
     local maxLayoutID = 0
     if layouts and layouts.layouts then
         for k, _ in pairs(layouts.layouts) do
@@ -15,9 +13,7 @@ function ImportCondenser:ImportEditMode(importString, profileName)
                 maxLayoutID = k
             end
         end
-        self:AddToInspector(maxLayoutID, "maxLayoutID")
         layouts.layouts[maxLayoutID + 1] = layout
-        self:AddToInspector(layouts, "EditMode Layouts After Import")
         C_EditMode.SaveLayouts(layouts)
         C_EditMode.SetActiveLayout(maxLayoutID + 3) -- need to add 3 because of the two default layouts
     end

@@ -101,11 +101,6 @@ function ns.SetupOptions(self)
     AceConfigDialog:AddToBlizOptions(ADDON_NAME, ADDON_NAME)
 end
 
-function ImportCondenser:AddToInspector(data, strName)
-	if DevTool and self.DEBUG then
-		DevTool:AddData(data, strName)
-	end
-end
 
 function ImportCondenser:Import(importStr)
     -- Attempt to parse and import immediately upon setting
