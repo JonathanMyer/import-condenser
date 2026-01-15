@@ -34,3 +34,4 @@ libs\AceSerializer-3.0\AceSerializer-3.0.xml
 
 # Addon code
 main.lua
+addons/platynator.lua

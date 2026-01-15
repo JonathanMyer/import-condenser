@@ -171,12 +171,6 @@ function ImportCondenser:ImportNephUI(profileName, importStr)
     end
 end
 
-function ImportCondenser:ImportPlatynatory(importString, profileName)
-    _G.PLATYNATOR_CONFIG = _G.PLATYNATOR_CONFIG or {}
-    _G.PLATYNATOR_CONFIG.Profiles = _G.PLATYNATOR_CONFIG.Profiles or {}
-    _G.PLATYNATOR_CONFIG.Profiles[profileName] = importString
-    _G.PLATYNATOR_CURRENT_PROFILE = profileName
-  end
 
 function ImportCondenser:GenerateExportString()
     local profileName = self.db.global.profileName or "DefaultProfile"
@@ -200,13 +194,7 @@ function ImportCondenser:GenerateExportString()
             end
         end
     end
-
-    if _G.PLATYNATOR_CONFIG and _G.PLATYNATOR_CONFIG.Profiles then
-        local platynatorProfile = _G.PLATYNATOR_CONFIG.Profiles[_G.PLATYNATOR_CURRENT_PROFILE]
-        if platynatorProfile then
-            exports["Platynatory"] = platynatorProfile
-        end
-    end
+    ImportCondenser:ExportPlatynatory(exports)
 
     return C_EncodingUtil.SerializeJSON(exports)
 end
