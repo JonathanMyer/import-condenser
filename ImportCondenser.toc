@@ -36,3 +36,4 @@ libs\AceSerializer-3.0\AceSerializer-3.0.xml
 main.lua
 addons/platynator.lua
 addons/editMode.lua
+addons/nephUI.lua

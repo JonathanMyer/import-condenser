@@ -13,7 +13,6 @@ ns.Addon = ImportCondenser
 ImportCondenser.DEBUG = true
 
 
-local AceDBOptions = LibStub("AceDBOptions-3.0", true)
 local LibDualSpec   = LibStub("LibDualSpec-1.0", true)
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
@@ -133,37 +132,12 @@ function ImportCondenser:Import(importStr)
     end
 end
 
-function ImportCondenser:ImportNephUI(profileName, importStr)
-    local NephUI = AceAddon and AceAddon:GetAddon("NephUI", true)
-
-    local profileOptions
-    if AceDBOptions and NephUI.db then
-        profileOptions = AceDBOptions:GetOptionsTable(NephUI.db)
-        -- Enhance profile options with LibDualSpec if available
-        if LibDualSpec then
-            LibDualSpec:EnhanceOptions(profileOptions, NephUI.db)
-        end
-    end
-
-    local handler = profileOptions.handler
-    handler.db.SetProfile(handler.db, profileName)
-
-    if NephUI and type(NephUI.ImportProfileFromString) == "function" then
-        NephUI:ImportProfileFromString(importStr)
-    end
-end
-
 
 function ImportCondenser:GenerateExportString()
     local profileName = self.db.global.profileName or "DefaultProfile"
     local exports = {profileName = profileName}
 
-    -- NephUI
-    local NephUI = AceAddon and AceAddon:GetAddon("NephUI", true)
-    if NephUI and type(NephUI.ExportProfileToString) == "function" then
-        exports["NephUI"] = NephUI:ExportProfileToString()
-    end
-
+    ImportCondenser:ExportNephUI(exports)
     ImportCondenser:ExportEditMode(exports)
     ImportCondenser:ExportPlatynatory(exports)
 
