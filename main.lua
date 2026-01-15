@@ -135,6 +135,7 @@ function ImportCondenser:GenerateExportString()
     ImportCondenser:ExportNephUI(exports)
     ImportCondenser:ExportEditMode(exports)
     ImportCondenser:ExportPlatynatory(exports)
+    ImportCondenser:ExportDBM(exports)
 
     return C_EncodingUtil.SerializeJSON(exports)
 end

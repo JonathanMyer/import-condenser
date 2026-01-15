@@ -16,6 +16,7 @@ libs\LibDataBroker-1.1.lua
 libs\LibDBIcon-1.0\lib.xml
 libs\LibSharedMedia-3.0\lib.xml
 libs\LibDeflate\LibDeflate.lua
+Libs\LibSerialize\lib.xml
 libs\LibCustomGlow-1.0\LibCustomGlow-1.0.lua
 libs\TaintLess\TaintLess.xml
 libs\LibDualSpec-1.0\LibDualSpec-1.0.lua
@@ -37,3 +38,4 @@ main.lua
 addons/platynator.lua
 addons/editMode.lua
 addons/nephUI.lua
+addons/dbm.lua
