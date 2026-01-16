@@ -14,13 +14,14 @@ end
 function ImportCondenser:ExportPlater(exports)
     local Plater = AceAddon and AceAddon:GetAddon("Plater", true)
     local DF = LibStub("DetailsFramework-1.0", true)
+    if not Plater or not DF then
+        return
+    end
     Plater.db.profile.captured_spells = {} -- cleanup, although it should be empty, stored in PlaterDB
     Plater.db.profile.captured_casts = {} -- cleanup, although it should be empty, stored in PlaterDB
     
     --create a modifiable copy, do not modify "in use" profile for safety
-    print("fetching Plater profile")
     local profile = DF.table.copy(Plater.db.profile, {})
-    print("Exporting Plater profile")
     local npc_cacheOrig = Plater.db.profile.npc_cache
     
     --do not export cache data, these data can be rebuild at run time
