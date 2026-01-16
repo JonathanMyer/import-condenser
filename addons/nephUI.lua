@@ -5,7 +5,6 @@ local AceDBOptions = LibStub("AceDBOptions-3.0", true)
 local LibDualSpec   = LibStub("LibDualSpec-1.0", true)
 
 function ImportCondenser:ImportNephUI(profileName, importStr)
-    print("Importing NephUI profile: " .. profileName)
     local NephUI = AceAddon and AceAddon:GetAddon("NephUI", true)
 
     local profileOptions
@@ -26,7 +25,6 @@ function ImportCondenser:ImportNephUI(profileName, importStr)
 end
 
 function ImportCondenser:ExportNephUI(exports)
-    print("Exporting NephUI profile")
     local NephUI = AceAddon and AceAddon:GetAddon("NephUI", true)
     if NephUI and type(NephUI.ExportProfileToString) == "function" then
         exports["NephUI"] = NephUI:ExportProfileToString()

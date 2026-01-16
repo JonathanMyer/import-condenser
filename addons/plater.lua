@@ -7,7 +7,6 @@ local DB_CAPTURED_SPELLS
 local DB_CAPTURED_CASTS
 
 function ImportCondenser:ImportPlater(importStr, profileName)
-    print("Importing Plater profile: " .. profileName)
     Plater.ImportAndSwitchProfile(profileName, importStr, false, false, true)
 end
 
