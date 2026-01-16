@@ -7,18 +7,6 @@ local LibDualSpec   = LibStub("LibDualSpec-1.0", true)
 local AceSerializer = LibStub("AceSerializer-3.0", true)
 local LibDeflate = LibStub("LibDeflate", true)
 
-local function copyTable(src, dest)
-	if type(dest) ~= "table" then dest = {} end
-	if type(src) == "table" then
-		for k,v in pairs(src) do
-			if type(v) == "table" then
-				v = copyTable(v, dest[k])
-			end
-			dest[k] = v
-		end
-	end
-	return dest
-end
 
 
 function ImportCondenser:ImportBartender(importStr, profileName)
@@ -63,7 +51,7 @@ function ImportCondenser:ImportBartender(importStr, profileName)
 		-- Import child profiles (action bars, etc)
 		for childName, childProfile in pairs(importProfile.children or {}) do
 			if handler.db.children[childName] then
-				copyTable(childProfile, handler.db.children[childName].profile)
+				ImportCondenser:CopyTable(childProfile, handler.db.children[childName].profile)
 			end
 		end
     end
@@ -95,7 +83,7 @@ function ImportCondenser:ExportBartender(exports)
 		
 		for childName, childDb in pairs(handler.db.children) do
 			exportProfile.children[childName] = {}
-			copyTable(childDb.profile, exportProfile.children[childName])
+			ImportCondenser:CopyTable(childDb.profile, exportProfile.children[childName])
 		end
 		
 		-- Serialize, compress, and encode

@@ -137,6 +137,9 @@ function ImportCondenser:Import(importStr)
             ImportCondenser:ImportBartender(result["Bartender"], profileName)
         end
 
+        if result["TwintopInsanityBar"] then
+            ImportCondenser:ImportTwintopInsanityBar(result["TwintopInsanityBar"], profileName)
+        end
         print("Import successful for profile: " .. profileName)
     else
         print("Import failed: " .. (err or "Invalid format."))
@@ -154,6 +157,7 @@ function ImportCondenser:GenerateExportString()
     ImportCondenser:ExportPlater(exports)
     ImportCondenser:ExportDetails(exports)
     ImportCondenser:ExportBartender(exports)
+    ImportCondenser:ExportTwintopInsanityBar(exports)
     ImportCondenser:ExportEditMode(exports)
 
     return C_EncodingUtil.SerializeJSON(exports)
@@ -200,4 +204,70 @@ function ImportCondenser:ShowExportWindow()
     local exportStr = self:GenerateExportString()
 
     self:DisplayTextFrame("Export", exportStr)
+end
+
+function ImportCondenser:AddToInspector(data, strName)
+	if DevTool and self.DEBUG then
+		DevTool:AddData(data, strName)
+	end
+end
+
+function ImportCondenser:DeSeriPressCode(inputStr)
+    local AceSerializer = LibStub("AceSerializer-3.0", true)
+    local LibDeflate = LibStub("LibDeflate", true)
+
+    if AceSerializer and LibDeflate then
+        -- Decode, decompress, and deserialize
+        local decoded = LibDeflate:DecodeForPrint(inputStr)
+        if not decoded then
+            print("Error: Failed to decode import string")
+            return nil
+        end
+
+        local decompressed = LibDeflate:DecompressDeflate(decoded)
+        if not decompressed then
+            print("Error: Failed to decompress data")
+            return nil
+        end
+
+        local success, importProfile = AceSerializer:Deserialize(decompressed)
+        if not success or not importProfile then
+            print("Error: Failed to deserialize profile")
+            return nil
+        end
+
+        return importProfile
+    else
+        print("Error: Required libraries for serialization are missing.")
+        return nil
+    end
+end
+
+function ImportCondenser:SeriPressCode(dataTable)
+    local AceSerializer = LibStub("AceSerializer-3.0", true)
+    local LibDeflate = LibStub("LibDeflate", true)
+
+    if AceSerializer and LibDeflate then
+        -- Serialize, compress, and encode
+        local serialized = AceSerializer:Serialize(dataTable)
+        local compressed = LibDeflate:CompressDeflate(serialized)
+        local encoded = LibDeflate:EncodeForPrint(compressed)
+
+        return encoded
+    else
+        print("Error: Required libraries for serialization are missing.")
+        return nil
+    end
+end
+function ImportCondenser:CopyTable(src, dest)
+	if type(dest) ~= "table" then dest = {} end
+	if type(src) == "table" then
+		for k,v in pairs(src) do
+			if type(v) == "table" then
+				v = self:CopyTable(v, dest[k])
+			end
+			dest[k] = v
+		end
+	end
+	return dest
 end

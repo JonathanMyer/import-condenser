@@ -41,3 +41,4 @@ addons/nephUI.lua
 addons/plater.lua
 addons/details.lua
 addons/bartender.lua
+addons/twintopInsanityBar.lua
