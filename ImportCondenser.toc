@@ -40,3 +40,4 @@ addons/editMode.lua
 addons/nephUI.lua
 addons/plater.lua
 addons/details.lua
+addons/bartender.lua

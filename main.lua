@@ -133,6 +133,10 @@ function ImportCondenser:Import(importStr)
             ImportCondenser:ImportDetails(result["Details"], profileName)
         end
 
+        if result["Bartender"] then
+            ImportCondenser:ImportBartender(result["Bartender"], profileName)
+        end
+
         print("Import successful for profile: " .. profileName)
     else
         print("Import failed: " .. (err or "Invalid format."))
@@ -149,6 +153,7 @@ function ImportCondenser:GenerateExportString()
     ImportCondenser:ExportBaganator(exports)
     ImportCondenser:ExportPlater(exports)
     ImportCondenser:ExportDetails(exports)
+    ImportCondenser:ExportBartender(exports)
     ImportCondenser:ExportEditMode(exports)
 
     return C_EncodingUtil.SerializeJSON(exports)
