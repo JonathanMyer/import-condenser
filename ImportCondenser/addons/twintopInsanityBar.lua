@@ -6,9 +6,7 @@ function ImportCondenser:ImportTwintopInsanityBar(importString)
     if settings then
         print("Importing Twintop Insanity Bar settings...")
         local asTable = ImportCondenser:DeSeriPressCode(importString)
-        ImportCondenser:AddToInspector(asTable, "TwintopInsanityBar Import")
         ImportCondenser:CopyTable(asTable, _G.Twintop_Data.settings)
-        ImportCondenser:AddToInspector(settings, "TwintopInsanityBar Post Import")
     end
 end
 
