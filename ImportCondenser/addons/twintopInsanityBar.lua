@@ -1,6 +1,5 @@
 local ADDON_NAME, ns = ...
 local ImportCondenser = ns.Addon
-local AceAddon = LibStub("AceAddon-3.0", true)
 
 function ImportCondenser:ImportTwintopInsanityBar(importString)
     local settings = _G.Twintop_Data.settings
@@ -10,7 +9,6 @@ function ImportCondenser:ImportTwintopInsanityBar(importString)
         ImportCondenser:AddToInspector(asTable, "TwintopInsanityBar Import")
         ImportCondenser:CopyTable(asTable, _G.Twintop_Data.settings)
         ImportCondenser:AddToInspector(settings, "TwintopInsanityBar Post Import")
-
     end
 end
 
