@@ -39,3 +39,4 @@ addons/baganator.lua
 addons/editMode.lua
 addons/nephUI.lua
 addons/plater.lua
+addons/details.lua

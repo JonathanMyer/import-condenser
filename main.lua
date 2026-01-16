@@ -129,6 +129,10 @@ function ImportCondenser:Import(importStr)
             ImportCondenser:ImportPlater(result["Plater"], profileName)
         end
 
+        if result["Details"] then
+            ImportCondenser:ImportDetails(result["Details"], profileName)
+        end
+
         print("Import successful for profile: " .. profileName)
     else
         print("Import failed: " .. (err or "Invalid format."))
@@ -141,10 +145,11 @@ function ImportCondenser:GenerateExportString()
     local exports = {profileName = profileName}
 
     ImportCondenser:ExportNephUI(exports)
-    ImportCondenser:ExportEditMode(exports)
     ImportCondenser:ExportPlatynator(exports)
     ImportCondenser:ExportBaganator(exports)
     ImportCondenser:ExportPlater(exports)
+    ImportCondenser:ExportDetails(exports)
+    ImportCondenser:ExportEditMode(exports)
 
     return C_EncodingUtil.SerializeJSON(exports)
 end
