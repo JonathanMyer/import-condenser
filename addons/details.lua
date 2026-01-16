@@ -9,6 +9,9 @@ function ImportCondenser:ImportDetails(importStr, profileName)
 end
 
 function ImportCondenser:ExportDetails(exports)
+	if type(_G.Details) ~= "table" or type(_G.Details.ExportCurrentProfile) ~= "function" then
+	  return
+	end
 	local profile = _G.Details:ExportCurrentProfile()
 	exports["Details"] = profile
 end
