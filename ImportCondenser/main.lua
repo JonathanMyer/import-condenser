@@ -223,19 +223,19 @@ function ns.SetupOptions(self)
                         end,
                         order = 2,
                     },
-                    addonGroup = {
-                        type = "group",
-                        name = "Addons",
-                        inline = true,
-                        order = 3,
-                        args = (function()
-                            local args = {}
-                            for i, addonName in ipairs(addons) do
-                                args[addonName .. "Section"] = ns.GenerateSection(addonName, i)
-                            end
-                            return args
-                        end)(),
-                    },
+                    -- addonGroup = {
+                    --     type = "group",
+                    --     name = "Addons",
+                    --     inline = true,
+                    --     order = 3,
+                    --     args = (function()
+                    --         local args = {}
+                    --         for i, addonName in ipairs(addons) do
+                    --             args[addonName .. "Section"] = ns.GenerateSection(addonName, i)
+                    --         end
+                    --         return args
+                    --     end)(),
+                    -- },
                 },
             },
         },
