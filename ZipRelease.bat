@@ -47,6 +47,15 @@ set "ZIP_PATH=%SOURCE_DIR%%ZIP_NAME%"
 echo Updating version in ImportCondenser.toc to %VERSION%...
 powershell -Command "(Get-Content '%TOC_FILE%') -replace '## Version: .*', '## Version: %VERSION%' | Set-Content '%TOC_FILE%'"
 
+:: Commit the version change
+echo Committing version change...
+git add "%TOC_FILE%"
+git commit -m "Bump version to %VERSION%"
+
+if %ERRORLEVEL% NEQ 0 (
+    echo Warning: Failed to commit version change. Continuing anyway...
+)
+
 echo Creating %ZIP_NAME%...
 echo Source: %SOURCE_DIR%
 echo Destination: %ZIP_PATH%
