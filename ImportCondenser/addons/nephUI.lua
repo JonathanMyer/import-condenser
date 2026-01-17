@@ -6,6 +6,10 @@ local LibDualSpec   = LibStub("LibDualSpec-1.0", true)
 
 ImportCondenser.NephUI = {}
 
+function ImportCondenser.NephUI:IsLoaded()
+    return C_AddOns and C_AddOns.IsAddOnLoaded("NephUI") or (IsAddOnLoaded and IsAddOnLoaded("NephUI"))
+end
+
 function ImportCondenser.NephUI:Import(profileName, importStr)
     local NephUI = AceAddon and AceAddon:GetAddon("NephUI", true)
 

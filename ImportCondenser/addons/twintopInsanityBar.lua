@@ -3,6 +3,10 @@ local ImportCondenser = ns.Addon
 
 ImportCondenser.TwintopInsanityBar = {}
 
+function ImportCondenser.TwintopInsanityBar:IsLoaded()
+    return C_AddOns and C_AddOns.IsAddOnLoaded("TwintopInsanityBar") or (IsAddOnLoaded and IsAddOnLoaded("TwintopInsanityBar"))
+end
+
 function ImportCondenser.TwintopInsanityBar:Import(importString)
     local settings = _G.Twintop_Data.settings
     if settings then

@@ -9,6 +9,10 @@ local LibDeflate = LibStub("LibDeflate", true)
 
 ImportCondenser.Bartender = {}
 
+function ImportCondenser.Bartender:IsLoaded()
+	return C_AddOns and C_AddOns.IsAddOnLoaded("Bartender4") or (IsAddOnLoaded and IsAddOnLoaded("Bartender4"))
+end
+
 function ImportCondenser.Bartender:Import(importStr, profileName)
     local Bartender = AceAddon and AceAddon:GetAddon("Bartender4", true)
 

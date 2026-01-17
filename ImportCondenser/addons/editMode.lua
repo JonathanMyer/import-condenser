@@ -3,6 +3,10 @@ local ImportCondenser = ns.Addon
 
 ImportCondenser.EditMode = {}
 
+function ImportCondenser.EditMode:IsLoaded()
+    return C_EditMode ~= nil
+end
+
 function ImportCondenser.EditMode:Import(importString, profileName)
     local layout = C_EditMode.ConvertStringToLayoutInfo(importString)
     layout.layoutName = profileName

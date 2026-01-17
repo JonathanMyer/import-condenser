@@ -8,6 +8,10 @@ ImportCondenser.Plater = {}
 local DB_CAPTURED_SPELLS
 local DB_CAPTURED_CASTS
 
+function ImportCondenser.Plater:IsLoaded()
+    return C_AddOns and C_AddOns.IsAddOnLoaded("Plater") or (IsAddOnLoaded and IsAddOnLoaded("Plater"))
+end
+
 function ImportCondenser.Plater:Import(importStr, profileName)
     Plater.ImportAndSwitchProfile(profileName, importStr, false, false, true)
 end
