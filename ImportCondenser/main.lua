@@ -18,17 +18,21 @@ local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 
-local addons = {
-    "NephUI",
-    "EditMode",
-    "Platynator",
-    "Baganator",
-    "Plater",
-    "Details",
-    "Bartender4",
-    "TwintopInsanityBar",
-    "DandersFrames"
-}
+local addons = {}
+
+function ImportCondenser:GetAddonModules()
+    if #addons == 0 then
+        -- Dynamically discover addon modules
+        for key, value in pairs(ImportCondenser) do
+            if type(value) == "table" and value.Import and value.Export then
+                table.insert(addons, key)
+            end
+        end
+        -- Sort alphabetically for consistent ordering
+        table.sort(addons)
+    end
+    return addons
+end
 
 function ImportCondenser:OnInitialize()
     -- Called when the addon is loaded
@@ -40,6 +44,9 @@ function ImportCondenser:OnInitialize()
 
     -- Clear ImportedStrings on every reload
     self.db.global.ImportedStrings = nil
+
+    -- Discover addon modules
+    self:GetAddonModules()
 
     ns.SetupOptions(self)
     self:RegisterChatCommand("importcondenser", "OpenConfig")
