@@ -43,6 +43,31 @@ function ImportCondenser:IsAddonLoaded(addonName)
     return C_AddOns and C_AddOns.IsAddOnLoaded(addonName) or (IsAddOnLoaded and IsAddOnLoaded(addonName))
 end
 
+
+function ns.GenerateSection(addonName, order)
+    return {
+        type = "group",
+        name = addonName,
+        order = order,
+        hidden = function() 
+            return not ImportCondenser:IsAddonLoaded(addonName)
+        end,
+        inline = true,
+        args = {
+            status = {
+                type = "description",
+                name = "Loaded",
+                order = 1,
+            },
+            parsed = {
+                type = "description",
+                name = "Something",
+                order = 2,
+            },
+        },
+    }
+end
+
 -- SetupOptions implementation
 function ns.SetupOptions(self)
 
@@ -73,164 +98,39 @@ function ns.SetupOptions(self)
                         end,
                         set = function(info, value)
                             tempImportText = value
-                            ImportCondenser:Import(value)
+                            ImportCondenser:ParseImportString(value)
                         end,
                         order = 1,
+                    },
+                    Import = {
+                        type = "execute",
+                        name = "Import",
+                        desc = "Import the pasted profile string.",
+                        width = "half",
+                        func = function()
+                            ImportCondenser:Import()
+                        end,
+                        order = 2,
                     },
                     reloadUi = {
                         type = "execute",
                         name = "Reload UI",
                         desc = "Reload the user interface to apply changes.",
+                        width = "half",
                         func = function()
                             ReloadUI()
                         end,
                         order = 2,
                     },
-                    -- Addon sections
-                    nephUISection = {
-                        type = "group",
-                        name = "NephUI",
-                        order = 10,
-                        hidden = function() 
-                            return not (ImportCondenser.NephUI and ImportCondenser.NephUI.IsLoaded and ImportCondenser.NephUI:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "NephUI profile will be imported.",
-                                order = 1,
-                            },
-                        },
-                    },
-                    editModeSection = {
-                        type = "group",
-                        name = "Edit Mode",
-                        order = 11,
-                        hidden = function() 
-                            return not (ImportCondenser.EditMode and ImportCondenser.EditMode.IsLoaded and ImportCondenser.EditMode:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "Edit Mode layout will be imported.",
-                                order = 1,
-                            },
-                        },
-                    },
-                    platynatorSection = {
-                        type = "group",
-                        name = "Platynator",
-                        order = 12,
-                        hidden = function() 
-                            return not (ImportCondenser.Platynator and ImportCondenser.Platynator.IsLoaded and ImportCondenser.Platynator:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "Platynator profile will be imported.",
-                                order = 1,
-                            },
-                        },
-                    },
-                    baganatorSection = {
-                        type = "group",
-                        name = "Baganator",
-                        order = 13,
-                        hidden = function() 
-                            return not (ImportCondenser.Baganator and ImportCondenser.Baganator.IsLoaded and ImportCondenser.Baganator:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "Baganator profile will be imported.",
-                                order = 1,
-                            },
-                        },
-                    },
-                    platerSection = {
-                        type = "group",
-                        name = "Plater",
-                        order = 14,
-                        hidden = function() 
-                            return not (ImportCondenser.Plater and ImportCondenser.Plater.IsLoaded and ImportCondenser.Plater:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "Plater profile will be imported.",
-                                order = 1,
-                            },
-                        },
-                    },
-                    detailsSection = {
-                        type = "group",
-                        name = "Details",
-                        order = 15,
-                        hidden = function() 
-                            return not (ImportCondenser.Details and ImportCondenser.Details.IsLoaded and ImportCondenser.Details:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "Details profile will be imported.",
-                                order = 1,
-                            },
-                        },
-                    },
-                    bartenderSection = {
-                        type = "group",
-                        name = "Bartender",
-                        order = 16,
-                        hidden = function() 
-                            return not (ImportCondenser.Bartender and ImportCondenser.Bartender.IsLoaded and ImportCondenser.Bartender:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "Bartender profile will be imported.",
-                                order = 1,
-                            },
-                        },
-                    },
-                    twintopInsanityBarSection = {
-                        type = "group",
-                        name = "Twintop Insanity Bar",
-                        order = 17,
-                        hidden = function() 
-                            return not (ImportCondenser.TwintopInsanityBar and ImportCondenser.TwintopInsanityBar.IsLoaded and ImportCondenser.TwintopInsanityBar:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "Twintop Insanity Bar settings will be imported.",
-                                order = 1,
-                            },
-                        },
-                    },
-                    dandersFramesSection = {
-                        type = "group",
-                        name = "Danders Frames",
-                        order = 18,
-                        hidden = function() 
-                            return not (ImportCondenser.DandersFrames and ImportCondenser.DandersFrames.IsLoaded and ImportCondenser.DandersFrames:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "Danders Frames profile will be imported.",
-                                order = 1,
-                            },
-                        },
-                    },
+                    nephUISection = ns.GenerateSection("NephUI", 3),
+                    editModeSection = ns.GenerateSection("EditMode", 4),
+                    platynatorSection = ns.GenerateSection("Platynator", 5),
+                    baganatorSection = ns.GenerateSection("Baganator", 6),
+                    platerSection = ns.GenerateSection("Plater", 7),
+                    detailsSection = ns.GenerateSection("Details", 8),
+                    bartenderSection = ns.GenerateSection("Bartender4", 9),
+                    twintopInsanityBarSection = ns.GenerateSection("TwintopInsanityBar", 10),
+                    dandersFramesSection = ns.GenerateSection("DandersFrames", 11),
                 },
             },
             exportTab = {
@@ -266,150 +166,15 @@ function ns.SetupOptions(self)
                         order = 2,
                     },
                     -- Addon sections
-                    nephUISection = {
-                        type = "group",
-                        name = "NephUI",
-                        order = 10,
-                        hidden = function() 
-                            return not (ImportCondenser.NephUI and ImportCondenser.NephUI.IsLoaded and ImportCondenser.NephUI:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "NephUI profile will be exported.",
-                                order = 1,
-                            },
-                        },
-                    },
-                    editModeSection = {
-                        type = "group",
-                        name = "Edit Mode",
-                        order = 11,
-                        hidden = function() 
-                            return not (ImportCondenser.EditMode and ImportCondenser.EditMode.IsLoaded and ImportCondenser.EditMode:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "Edit Mode layout will be exported.",
-                                order = 1,
-                            },
-                        },
-                    },
-                    platynatorSection = {
-                        type = "group",
-                        name = "Platynator",
-                        order = 12,
-                        hidden = function() 
-                            return not (ImportCondenser.Platynator and ImportCondenser.Platynator.IsLoaded and ImportCondenser.Platynator:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "Platynator profile will be exported.",
-                                order = 1,
-                            },
-                        },
-                    },
-                    baganatorSection = {
-                        type = "group",
-                        name = "Baganator",
-                        order = 13,
-                        hidden = function() 
-                            return not (ImportCondenser.Baganator and ImportCondenser.Baganator.IsLoaded and ImportCondenser.Baganator:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "Baganator profile will be exported.",
-                                order = 1,
-                            },
-                        },
-                    },
-                    platerSection = {
-                        type = "group",
-                        name = "Plater",
-                        order = 14,
-                        hidden = function() 
-                            return not (ImportCondenser.Plater and ImportCondenser.Plater.IsLoaded and ImportCondenser.Plater:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "Plater profile will be exported.",
-                                order = 1,
-                            },
-                        },
-                    },
-                    detailsSection = {
-                        type = "group",
-                        name = "Details",
-                        order = 15,
-                        hidden = function() 
-                            return not (ImportCondenser.Details and ImportCondenser.Details.IsLoaded and ImportCondenser.Details:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "Details profile will be exported.",
-                                order = 1,
-                            },
-                        },
-                    },
-                    bartenderSection = {
-                        type = "group",
-                        name = "Bartender",
-                        order = 16,
-                        hidden = function() 
-                            return not (ImportCondenser.Bartender and ImportCondenser.Bartender.IsLoaded and ImportCondenser.Bartender:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "Bartender profile will be exported.",
-                                order = 1,
-                            },
-                        },
-                    },
-                    twintopInsanityBarSection = {
-                        type = "group",
-                        name = "Twintop Insanity Bar",
-                        order = 17,
-                        hidden = function() 
-                            return not (ImportCondenser.TwintopInsanityBar and ImportCondenser.TwintopInsanityBar.IsLoaded and ImportCondenser.TwintopInsanityBar:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "Twintop Insanity Bar settings will be exported.",
-                                order = 1,
-                            },
-                        },
-                    },
-                    dandersFramesSection = {
-                        type = "group",
-                        name = "Danders Frames",
-                        order = 18,
-                        hidden = function() 
-                            return not (ImportCondenser.DandersFrames and ImportCondenser.DandersFrames.IsLoaded and ImportCondenser.DandersFrames:IsLoaded())
-                        end,
-                        inline = true,
-                        args = {
-                            status = {
-                                type = "description",
-                                name = "Danders Frames profile will be exported.",
-                                order = 1,
-                            },
-                        },
-                    },
+                    nephUISection = ns.GenerateSection("NephUI", 3),
+                    editModeSection = ns.GenerateSection("EditMode", 4),
+                    platynatorSection = ns.GenerateSection("Platynator", 5),
+                    baganatorSection = ns.GenerateSection("Baganator", 6),
+                    platerSection = ns.GenerateSection("Plater", 7),
+                    detailsSection = ns.GenerateSection("Details", 8),
+                    bartenderSection = ns.GenerateSection("Bartender4", 9),
+                    twintopInsanityBarSection = ns.GenerateSection("TwintopInsanityBar", 10),
+                    dandersFramesSection = ns.GenerateSection("DandersFrames", 11),
                 },
             },
         },
@@ -419,48 +184,52 @@ function ns.SetupOptions(self)
     AceConfigDialog:AddToBlizOptions(ADDON_NAME, ADDON_NAME)
 end
 
+function ImportCondenser:ParseImportString(importStr)
+    self.db.global.ImportedStrings = C_EncodingUtil.DeserializeJSON(importStr)
+end
 
-function ImportCondenser:Import(importStr)
-    -- Attempt to parse and import immediately upon setting
-    local result = C_EncodingUtil.DeserializeJSON(importStr)
-    if result and type(result) == "table" then
-        local profileName = result.profileName or "ImportedProfile"
+function ImportCondenser:Import()
+    for key, value in pairs(self.db.global.ImportedStrings) do
+        print("Key: " .. tostring(key))
+    end
+    if self.db.global.ImportedStrings and type(self.db.global.ImportedStrings) == "table" then
+        local profileName = self.db.global.ImportedStrings.profileName or "ImportedProfile"
         print("Starting import for profile: " .. profileName)
 
-        if result["NephUI"] then
-            ImportCondenser.NephUI:Import(profileName, result["NephUI"])
+        if self.db.global.ImportedStrings["NephUI"] then
+            ImportCondenser.NephUI:Import(profileName, self.db.global.ImportedStrings["NephUI"])
         end
 
-        if result["EditMode"] and C_EditMode then
-            ImportCondenser.EditMode:Import(result["EditMode"], profileName)
+        if self.db.global.ImportedStrings["EditMode"] and C_EditMode then
+            ImportCondenser.EditMode:Import(self.db.global.ImportedStrings["EditMode"], profileName)
         end
 
-        if result["Platynator"] then
-            ImportCondenser.Platynator:Import(result["Platynator"], profileName)
+        if self.db.global.ImportedStrings["Platynator"] then
+            ImportCondenser.Platynator:Import(self.db.global.ImportedStrings["Platynator"], profileName)
         end
 
-        if result["Baganator"] then
-            ImportCondenser.Baganator:Import(result["Baganator"], profileName)
+        if self.db.global.ImportedStrings["Baganator"] then
+            ImportCondenser.Baganator:Import(self.db.global.ImportedStrings["Baganator"], profileName)
         end
 
-        if result["Plater"] then
-            ImportCondenser.Plater:Import(result["Plater"], profileName)
+        if self.db.global.ImportedStrings["Plater"] then
+            ImportCondenser.Plater:Import(self.db.global.ImportedStrings["Plater"], profileName)
         end
 
-        if result["Details"] then
-            ImportCondenser.Details:Import(result["Details"], profileName)
+        if self.db.global.ImportedStrings["Details"] then
+            ImportCondenser.Details:Import(self.db.global.ImportedStrings["Details"], profileName)
         end
 
-        if result["Bartender"] then
-            ImportCondenser.Bartender:Import(result["Bartender"], profileName)
+        if self.db.global.ImportedStrings["Bartender"] then
+            ImportCondenser.Bartender:Import(self.db.global.ImportedStrings["Bartender"], profileName)
         end
 
-        if result["TwintopInsanityBar"] then
-            ImportCondenser.TwintopInsanityBar:Import(result["TwintopInsanityBar"], profileName)
+        if self.db.global.ImportedStrings["TwintopInsanityBar"] then
+            ImportCondenser.TwintopInsanityBar:Import(self.db.global.ImportedStrings["TwintopInsanityBar"], profileName)
         end
 
-        if result["DandersFrames"] then
-            ImportCondenser.DandersFrames:Import(result["DandersFrames"], profileName)
+        if self.db.global.ImportedStrings["DandersFrames"] then
+            ImportCondenser.DandersFrames:Import(self.db.global.ImportedStrings["DandersFrames"], profileName)
         end
 
         print("Import successful for profile: " .. profileName)
@@ -474,6 +243,7 @@ function ImportCondenser:GenerateExportString()
     local profileName = self.db.global.profileName or "DefaultProfile"
     local exports = {profileName = profileName}
 
+    print("Exporting")
     ImportCondenser.NephUI:Export(exports)
     ImportCondenser.Platynator:Export(exports)
     ImportCondenser.Baganator:Export(exports)
@@ -523,7 +293,6 @@ function ImportCondenser:DisplayTextFrame(title, text)
     end
 end
 
--- Show export window for NephUI profile
 function ImportCondenser:ShowExportWindow()
     local exportStr = self:GenerateExportString()
 
@@ -594,8 +363,4 @@ function ImportCondenser:CopyTable(src, dest)
 		end
 	end
 	return dest
-end
-
-function ImportCondenser:IsAddonLoaded(addonName)
-    return C_AddOns and C_AddOns.IsAddOnLoaded(addonName) or (IsAddOnLoaded and IsAddOnLoaded(addonName))
 end
