@@ -4,8 +4,7 @@ local ImportCondenser = ns.Addon
 ImportCondenser.TwintopInsanityBar = {}
 
 function ImportCondenser.TwintopInsanityBar:Import(importString)
-    local settings = _G.Twintop_Data.settings
-    if settings then
+    if _G.Twintop_Data and _G.Twintop_Data.settings then
         print("Importing Twintop Insanity Bar settings...")
         local asTable = ImportCondenser:DeSeriPressCode(importString)
         ImportCondenser:CopyTable(asTable, _G.Twintop_Data.settings)

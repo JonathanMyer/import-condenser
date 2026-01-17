@@ -10,21 +10,24 @@ local LibDeflate = LibStub("LibDeflate", true)
 ImportCondenser.Bartender4 = {}
 
 function ImportCondenser.Bartender4:Import(importStr, profileName)
-    local Bartender = AceAddon and AceAddon:GetAddon("Bartender4", true)
+    local Bartender4 = AceAddon and AceAddon:GetAddon("Bartender4", true)
+	if not Bartender4 then
+		return
+	end
 
     local profileOptions
-    if AceDBOptions and Bartender.db then
-        profileOptions = AceDBOptions:GetOptionsTable(Bartender.db)
+    if AceDBOptions and Bartender4.db then
+        profileOptions = AceDBOptions:GetOptionsTable(Bartender4.db)
         -- Enhance profile options with LibDualSpec if available
         if LibDualSpec then
-            LibDualSpec:EnhanceOptions(profileOptions, Bartender.db)
+            LibDualSpec:EnhanceOptions(profileOptions, Bartender4.db)
         end
     end
 
     local handler = profileOptions.handler
     handler.db.SetProfile(handler.db, profileName)
 
-    if Bartender and AceSerializer and LibDeflate then
+    if Bartender4 and AceSerializer and LibDeflate then
 		-- Decode, decompress, and deserialize
 		local decoded = LibDeflate:DecodeForPrint(importStr)
 		if not decoded then

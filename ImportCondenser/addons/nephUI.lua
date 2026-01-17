@@ -8,6 +8,9 @@ ImportCondenser.NephUI = {}
 
 function ImportCondenser.NephUI:Import(importStr, profileName)
     local NephUI = AceAddon and AceAddon:GetAddon("NephUI", true)
+    if not NephUI then
+        return
+    end
 
     local profileOptions
     if AceDBOptions and NephUI.db then
