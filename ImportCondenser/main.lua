@@ -38,6 +38,9 @@ function ImportCondenser:OnInitialize()
         LibDualSpec:EnhanceDatabase(self.db, "ImportCondenser")
     end
 
+    -- Clear ImportedStrings on every reload
+    self.db.global.ImportedStrings = nil
+
     ns.SetupOptions(self)
     self:RegisterChatCommand("importcondenser", "OpenConfig")
     self:RegisterChatCommand("ic", "OpenConfig")
@@ -80,7 +83,7 @@ function ns.GenerateSection(addonName, order)
                 type = "description",
                 name = function()
                     local hasImport = ImportCondenser.db and ImportCondenser.db.global.ImportedStrings and ImportCondenser.db.global.ImportedStrings[addonName] ~= nil
-                    return hasImport and "|cff00ff00Parsed|r" or "|cffaaaaaa---"
+                    return hasImport and "|cff00ff00Ready to Import|r" or "|cffaaaaaa---"
                 end,
                 width = 0.5,
                 order = 3,
@@ -107,6 +110,18 @@ function ns.SetupOptions(self)
                         type = "header",
                         name = "Import Settings",
                         order = 0,
+                    },
+                    importProfileName = {
+                        type = "input",
+                        name = "Import Profile Name Override",
+                        desc = "Enter a name for the imported profile.",
+                        get = function(info)
+                            return self.db.global.importProfileName or nil
+                        end,
+                        set = function(info, value)
+                            self.db.global.importProfileName = value
+                        end,
+                        order = 0.5,
                     },
                     importProfile = {
                         type = "input",
@@ -139,7 +154,6 @@ function ns.SetupOptions(self)
                         desc = "Reload the user interface to apply changes.",
                         width = "half",
                         func = function()
-                            ImportCondenser.db.global.ImportedStrings = nil
                             ReloadUI()
                         end,
                         order = 2,
@@ -220,11 +234,8 @@ function ImportCondenser:ParseImportString(importStr)
 end
 
 function ImportCondenser:Import()
-    for key, value in pairs(self.db.global.ImportedStrings) do
-        print("Key: " .. tostring(key))
-    end
     if self.db.global.ImportedStrings and type(self.db.global.ImportedStrings) == "table" then
-        local profileName = self.db.global.ImportedStrings.profileName or "ImportedProfile"
+        local profileName = self.db.global.importProfileName ~= "" and self.db.global.importProfileName or self.db.global.ImportedStrings.profileName or "ImportedProfile"
         print("Starting import for profile: " .. profileName)
 
         if self.db.global.ImportedStrings["NephUI"] then
