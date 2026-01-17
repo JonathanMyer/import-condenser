@@ -3,6 +3,21 @@ local ImportCondenser = ns.Addon
 
 ImportCondenser.EditMode = {}
 
+function ImportCondenser.EditMode:DetectIssues(importString)
+    local layouts = C_EditMode and C_EditMode.GetLayouts and C_EditMode.GetLayouts()
+    if layouts and layouts.layouts and ImportCondenser:CountKeys(layouts.layouts) >= 5 then
+        return "You have reached the maximum number of EditMode layouts. Delete a layout to import."
+    end
+    if not C_EditMode or type(C_EditMode.ConvertStringToLayoutInfo) ~= "function" then
+        return "EditMode API not available."
+    end
+    local layout = C_EditMode.ConvertStringToLayoutInfo(importString)
+    if not layout then
+        return "Failed to convert import string to layout info."
+    end
+    return nil
+end
+
 function ImportCondenser.EditMode:Import(importString, profileName)
     if not C_EditMode or
        type(C_EditMode.ConvertStringToLayoutInfo) ~= "function" or

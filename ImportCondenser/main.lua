@@ -89,10 +89,21 @@ function ns.GenerateSection(addonName, order)
             parsed = {
                 type = "description",
                 name = function()
-                    local hasImport = ImportCondenser:IsAddonLoaded(addonName) and ImportCondenser.db and ImportCondenser.db.global.ImportedStrings and ImportCondenser.db.global.ImportedStrings[addonName] ~= nil
-                    return hasImport and "|cff00ff00Ready to Import|r" or "|cffaaaaaa---"
+                    local addonModule = ImportCondenser[addonName]
+                    local readyToImport = ImportCondenser:IsAddonLoaded(addonName) and
+                        ImportCondenser.db and
+                        ImportCondenser.db.global.ImportedStrings and
+                        ImportCondenser.db.global.ImportedStrings[addonName] ~= nil and
+                        addonModule ~= nil
+                    if readyToImport and addonModule and addonModule.DetectIssues then
+                        local issues = addonModule:DetectIssues(ImportCondenser.db.global.ImportedStrings[addonName])
+                        if issues then
+                            return "|cffff0000" .. issues .. "|r"
+                        end
+                    end
+                    return readyToImport and "|cff00ff00Ready to Import|r" or "|cffaaaaaa---"
                 end,
-                width = 0.5,
+                width = "fill",
                 order = 3,
             },
         },
@@ -380,4 +391,16 @@ function ImportCondenser:CopyTable(src, dest)
 		end
 	end
 	return dest
+end
+
+
+function ImportCondenser:CountKeys(table)
+    if not table then
+        return 0
+    end
+    local count = 0
+    for _ in pairs(table) do
+        count = count + 1
+    end
+    return count
 end
