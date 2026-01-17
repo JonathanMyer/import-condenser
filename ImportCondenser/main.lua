@@ -119,20 +119,10 @@ function ns.SetupOptions(self)
                         desc = "Reload the user interface to apply changes.",
                         width = "half",
                         func = function()
+                            ImportCondenser.db.global.ImportedStrings = nil
                             ReloadUI()
                         end,
                         order = 2,
-                    },
-                    clearImport = {
-                        type = "execute",
-                        name = "Clear",
-                        desc = "Clear the parsed import data.",
-                        width = "half",
-                        func = function()
-                            ImportCondenser.db.global.ImportedStrings = nil
-                            AceConfigRegistry:NotifyChange(ADDON_NAME)
-                        end,
-                        order = 3,
                     },
                     nephUISection = ns.GenerateSection("NephUI", 4),
                     editModeSection = ns.GenerateSection("EditMode", 5),
@@ -199,7 +189,7 @@ end
 function ImportCondenser:ParseImportString(importStr)
     self.db.global.ImportedStrings = C_EncodingUtil.DeserializeJSON(importStr)
     -- Refresh the UI to show updated parse status
-    -- AceConfigRegistry:NotifyChange(ADDON_NAME)
+    AceConfigRegistry:NotifyChange(ADDON_NAME)
 end
 
 function ImportCondenser:Import()
@@ -247,9 +237,6 @@ function ImportCondenser:Import()
         end
 
         print("Import successful for profile: " .. profileName)
-        self.db.global.ImportedStrings = nil
-        -- Refresh the UI to clear parse status after import
-        AceConfigRegistry:NotifyChange(ADDON_NAME)
     else
         print("Import failed: " .. (err or "Invalid format."))
     end
