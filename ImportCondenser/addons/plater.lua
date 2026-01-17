@@ -5,8 +5,8 @@ local AceAddon = LibStub("AceAddon-3.0", true)
 ImportCondenser.Plater = {}
 
 --db upvalues
-local DB_CAPTURED_SPELLS
-local DB_CAPTURED_CASTS
+local DB_CAPTURED_SPELLS = {}
+local DB_CAPTURED_CASTS = {}
 
 function ImportCondenser.Plater:Import(importStr, profileName)
     Plater.ImportAndSwitchProfile(profileName, importStr, false, false, true)
