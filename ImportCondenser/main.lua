@@ -44,45 +44,11 @@ function ns.SetupOptions(self)
         type = "group",
         name = ADDON_NAME,
         args = {
-            exportTab = {
-                type = "group",
-                name = "Export",
-                desc = "Export your addon profiles",
-                order = 1,
-                args = {
-                    header = {
-                        type = "header",
-                        name = "Export Settings",
-                        order = 0,
-                    },
-                    profileName = {
-                        type = "input",
-                        name = "Export Profile Name",
-                        desc = "Enter a name for the exported profile.",
-                        get = function(info)
-                            return self.db.global.profileName or "DefaultProfile"
-                        end,
-                        set = function(info, value)
-                            self.db.global.profileName = value
-                        end,
-                        order = 1,
-                    },
-                    exportNephUI = {
-                        type = "execute",
-                        name = "Export Current Profiles",
-                        desc = "Export current profile to string.",
-                        func = function()
-                            ImportCondenser:ShowExportWindow()
-                        end,
-                        order = 2,
-                    },
-                },
-            },
             importTab = {
                 type = "group",
                 name = "Import",
                 desc = "Import addon profiles",
-                order = 2,
+                order = 1,
                 args = {
                     header = {
                         type = "header",
@@ -110,6 +76,40 @@ function ns.SetupOptions(self)
                         desc = "Reload the user interface to apply changes.",
                         func = function()
                             ReloadUI()
+                        end,
+                        order = 2,
+                    },
+                },
+            },
+            exportTab = {
+                type = "group",
+                name = "Export",
+                desc = "Export your addon profiles",
+                order = 2,
+                args = {
+                    header = {
+                        type = "header",
+                        name = "Export Settings",
+                        order = 0,
+                    },
+                    profileName = {
+                        type = "input",
+                        name = "Export Profile Name",
+                        desc = "Enter a name for the exported profile.",
+                        get = function(info)
+                            return self.db.global.profileName or "DefaultProfile"
+                        end,
+                        set = function(info, value)
+                            self.db.global.profileName = value
+                        end,
+                        order = 1,
+                    },
+                    exportNephUI = {
+                        type = "execute",
+                        name = "Export Current Profiles",
+                        desc = "Export current profile to string.",
+                        func = function()
+                            ImportCondenser:ShowExportWindow()
                         end,
                         order = 2,
                     },
