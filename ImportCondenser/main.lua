@@ -131,39 +131,39 @@ function ImportCondenser:Import(importStr)
         print("Starting import for profile: " .. profileName)
 
         if result["NephUI"] then
-            ImportCondenser:ImportNephUI(profileName, result["NephUI"])
+            ImportCondenser.NephUI:Import(profileName, result["NephUI"])
         end
 
         if result["EditMode"] and C_EditMode then
-            ImportCondenser:ImportEditMode(result["EditMode"], profileName)
+            ImportCondenser.EditMode:Import(result["EditMode"], profileName)
         end
 
         if result["Platynator"] then
-            ImportCondenser:ImportPlatynator(result["Platynator"], profileName)
+            ImportCondenser.Platynator:Import(result["Platynator"], profileName)
         end
 
         if result["Baganator"] then
-            ImportCondenser:ImportBaganator(result["Baganator"], profileName)
+            ImportCondenser.Baganator:Import(result["Baganator"], profileName)
         end
 
         if result["Plater"] then
-            ImportCondenser:ImportPlater(result["Plater"], profileName)
+            ImportCondenser.Plater:Import(result["Plater"], profileName)
         end
 
         if result["Details"] then
-            ImportCondenser:ImportDetails(result["Details"], profileName)
+            ImportCondenser.Details:Import(result["Details"], profileName)
         end
 
         if result["Bartender"] then
-            ImportCondenser:ImportBartender(result["Bartender"], profileName)
+            ImportCondenser.Bartender:Import(result["Bartender"], profileName)
         end
 
         if result["TwintopInsanityBar"] then
-            ImportCondenser:ImportTwintopInsanityBar(result["TwintopInsanityBar"], profileName)
+            ImportCondenser.TwintopInsanityBar:Import(result["TwintopInsanityBar"], profileName)
         end
 
         if result["DandersFrames"] then
-            ImportCondenser:ImportDandersFrames(result["DandersFrames"], profileName)
+            ImportCondenser.DandersFrames:Import(result["DandersFrames"], profileName)
         end
 
         print("Import successful for profile: " .. profileName)
@@ -177,15 +177,15 @@ function ImportCondenser:GenerateExportString()
     local profileName = self.db.global.profileName or "DefaultProfile"
     local exports = {profileName = profileName}
 
-    ImportCondenser:ExportNephUI(exports)
-    ImportCondenser:ExportPlatynator(exports)
-    ImportCondenser:ExportBaganator(exports)
-    ImportCondenser:ExportPlater(exports)
-    ImportCondenser:ExportDetails(exports)
-    ImportCondenser:ExportBartender(exports)
-    ImportCondenser:ExportTwintopInsanityBar(exports)
-    ImportCondenser:ExportDandersFrames(exports)
-    ImportCondenser:ExportEditMode(exports)
+    ImportCondenser.NephUI:Export(exports)
+    ImportCondenser.Platynator:Export(exports)
+    ImportCondenser.Baganator:Export(exports)
+    ImportCondenser.Plater:Export(exports)
+    ImportCondenser.Details:Export(exports)
+    ImportCondenser.Bartender:Export(exports)
+    ImportCondenser.TwintopInsanityBar:Export(exports)
+    ImportCondenser.DandersFrames:Export(exports)
+    ImportCondenser.EditMode:Export(exports)
 
     return C_EncodingUtil.SerializeJSON(exports)
 end

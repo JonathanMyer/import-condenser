@@ -1,7 +1,9 @@
 local ADDON_NAME, ns = ...
 local ImportCondenser = ns.Addon
 
-function ImportCondenser:ImportEditMode(importString, profileName)
+ImportCondenser.EditMode = {}
+
+function ImportCondenser.EditMode:Import(importString, profileName)
     local layout = C_EditMode.ConvertStringToLayoutInfo(importString)
     layout.layoutName = profileName
     layout.layoutType = 1 -- set to account layout
@@ -19,7 +21,7 @@ function ImportCondenser:ImportEditMode(importString, profileName)
     end
 end
 
-function ImportCondenser:ExportEditMode(exports)
+function ImportCondenser.EditMode:Export(exports)
     if C_EditMode and type(C_EditMode.GetLayouts) == "function" and type(C_EditMode.ConvertLayoutInfoToString) == "function" then
         local layouts = C_EditMode.GetLayouts()
         local layoutNumber = layouts and layouts.activeLayout

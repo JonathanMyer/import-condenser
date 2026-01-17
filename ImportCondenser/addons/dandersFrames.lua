@@ -1,9 +1,11 @@
 local ADDON_NAME, ns = ...
 local ImportCondenser = ns.Addon
 
+ImportCondenser.DandersFrames = {}
+
 local exportFrameTypes = {party = true, raid = true}
 
-function ImportCondenser:ImportDandersFrames(importString, profileName)
+function ImportCondenser.DandersFrames:Import(importString, profileName)
     if _G.DandersFrames and
         type(_G.DandersFrames.ApplyImportedProfile) == "function" and
         type(_G.DandersFrames.ValidateImportString) == "function"
@@ -14,7 +16,7 @@ function ImportCondenser:ImportDandersFrames(importString, profileName)
     end
 end
 
-function ImportCondenser:ExportDandersFrames(table)
+function ImportCondenser.DandersFrames:Export(table)
     if _G.DandersFrames and type(_G.DandersFrames.ExportProfile) == "function" then
         table["DandersFrames"] = _G.DandersFrames:ExportProfile(nil, exportFrameTypes, nil)
     end

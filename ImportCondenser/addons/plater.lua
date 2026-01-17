@@ -2,15 +2,17 @@ local ADDON_NAME, ns = ...
 local ImportCondenser = ns.Addon
 local AceAddon = LibStub("AceAddon-3.0", true)
 
+ImportCondenser.Plater = {}
+
 --db upvalues
 local DB_CAPTURED_SPELLS
 local DB_CAPTURED_CASTS
 
-function ImportCondenser:ImportPlater(importStr, profileName)
+function ImportCondenser.Plater:Import(importStr, profileName)
     Plater.ImportAndSwitchProfile(profileName, importStr, false, false, true)
 end
 
-function ImportCondenser:ExportPlater(exports)
+function ImportCondenser.Plater:Export(exports)
     local Plater = AceAddon and AceAddon:GetAddon("Plater", true)
     local DF = LibStub("DetailsFramework-1.0", true)
     if not Plater or not DF then
