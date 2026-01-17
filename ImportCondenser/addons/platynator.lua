@@ -3,10 +3,6 @@ local ImportCondenser = ns.Addon
 
 ImportCondenser.Platynator = {}
 
-function ImportCondenser.Platynator:IsLoaded()
-    return C_AddOns and C_AddOns.IsAddOnLoaded("Platynator") or (IsAddOnLoaded and IsAddOnLoaded("Platynator"))
-end
-
 function ImportCondenser.Platynator:Import(importString, profileName)
     _G.PLATYNATOR_CONFIG = _G.PLATYNATOR_CONFIG or {}
     _G.PLATYNATOR_CONFIG.Profiles = _G.PLATYNATOR_CONFIG.Profiles or {}

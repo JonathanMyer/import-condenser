@@ -36,6 +36,13 @@ function ImportCondenser:OpenConfig()
     AceConfigDialog:Open(ADDON_NAME)
 end
 
+function ImportCondenser:IsAddonLoaded(addonName)
+    if addonName == "EditMode" then
+        return C_EditMode ~= nil
+    end
+    return C_AddOns and C_AddOns.IsAddOnLoaded(addonName) or (IsAddOnLoaded and IsAddOnLoaded(addonName))
+end
+
 -- SetupOptions implementation
 function ns.SetupOptions(self)
 
@@ -587,4 +594,8 @@ function ImportCondenser:CopyTable(src, dest)
 		end
 	end
 	return dest
+end
+
+function ImportCondenser:IsAddonLoaded(addonName)
+    return C_AddOns and C_AddOns.IsAddOnLoaded(addonName) or (IsAddOnLoaded and IsAddOnLoaded(addonName))
 end

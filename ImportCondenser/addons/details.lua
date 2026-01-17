@@ -3,10 +3,6 @@ local ImportCondenser = ns.Addon
 
 ImportCondenser.Details = {}
 
-function ImportCondenser.Details:IsLoaded()
-	return C_AddOns and C_AddOns.IsAddOnLoaded("Details") or (IsAddOnLoaded and IsAddOnLoaded("Details"))
-end
-
 function ImportCondenser.Details:Import(importStr, profileName)
 	if type(_G.Details) ~= "table" or type(_G.Details.ImportProfile) ~= "function" then
       print("Details ImportProfile not available.")

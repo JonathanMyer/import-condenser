@@ -5,10 +5,6 @@ ImportCondenser.DandersFrames = {}
 
 local exportFrameTypes = {party = true, raid = true}
 
-function ImportCondenser.DandersFrames:IsLoaded()
-    return C_AddOns and C_AddOns.IsAddOnLoaded("DandersFrames") or (IsAddOnLoaded and IsAddOnLoaded("DandersFrames"))
-end
-
 function ImportCondenser.DandersFrames:Import(importString, profileName)
     if _G.DandersFrames and
         type(_G.DandersFrames.ApplyImportedProfile) == "function" and

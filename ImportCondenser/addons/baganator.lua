@@ -3,10 +3,6 @@ local ImportCondenser = ns.Addon
 
 ImportCondenser.Baganator = {}
 
-function ImportCondenser.Baganator:IsLoaded()
-    return C_AddOns and C_AddOns.IsAddOnLoaded("Baganator") or (IsAddOnLoaded and IsAddOnLoaded("Baganator"))
-end
-
 function ImportCondenser.Baganator:Import(importString, profileName)
     _G.BAGANATOR_CONFIG = _G.BAGANATOR_CONFIG or {}
     _G.BAGANATOR_CONFIG.Profiles = _G.BAGANATOR_CONFIG.Profiles or {}
