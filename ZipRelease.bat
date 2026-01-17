@@ -60,8 +60,23 @@ echo Creating %ZIP_NAME%...
 echo Source: %SOURCE_DIR%
 echo Destination: %ZIP_PATH%
 
-:: Use PowerShell to create the zip file
-powershell -Command "Compress-Archive -Path '%SOURCE_DIR%ImportCondenser\*' -DestinationPath '%ZIP_PATH%' -Force"
+:: Create a temporary directory structure and copy files
+set "TEMP_DIR=%SOURCE_DIR%temp_zip"
+set "TEMP_ADDON_DIR=%TEMP_DIR%\ImportCondenser"
+
+echo Creating temporary directory structure...
+if exist "%TEMP_DIR%" rmdir /s /q "%TEMP_DIR%"
+mkdir "%TEMP_ADDON_DIR%"
+
+echo Copying addon files...
+xcopy "%SOURCE_DIR%ImportCondenser\*" "%TEMP_ADDON_DIR%\" /E /I /Y /Q
+
+:: Use PowerShell to create the zip file from the temp directory
+powershell -Command "Compress-Archive -Path '%TEMP_DIR%\*' -DestinationPath '%ZIP_PATH%' -Force"
+
+:: Clean up temp directory
+echo Cleaning up...
+rmdir /s /q "%TEMP_DIR%"
 
 if %ERRORLEVEL% EQU 0 (
     echo.
