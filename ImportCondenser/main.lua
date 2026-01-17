@@ -238,40 +238,13 @@ function ImportCondenser:Import()
         local profileName = self.db.global.importProfileName ~= "" and self.db.global.importProfileName or self.db.global.ImportedStrings.profileName or "ImportedProfile"
         print("Starting import for profile: " .. profileName)
 
-        if self.db.global.ImportedStrings["NephUI"] then
-            ImportCondenser.NephUI:Import(profileName, self.db.global.ImportedStrings["NephUI"])
-        end
-
-        if self.db.global.ImportedStrings["EditMode"] and C_EditMode then
-            ImportCondenser.EditMode:Import(self.db.global.ImportedStrings["EditMode"], profileName)
-        end
-
-        if self.db.global.ImportedStrings["Platynator"] then
-            ImportCondenser.Platynator:Import(self.db.global.ImportedStrings["Platynator"], profileName)
-        end
-
-        if self.db.global.ImportedStrings["Baganator"] then
-            ImportCondenser.Baganator:Import(self.db.global.ImportedStrings["Baganator"], profileName)
-        end
-
-        if self.db.global.ImportedStrings["Plater"] then
-            ImportCondenser.Plater:Import(self.db.global.ImportedStrings["Plater"], profileName)
-        end
-
-        if self.db.global.ImportedStrings["Details"] then
-            ImportCondenser.Details:Import(self.db.global.ImportedStrings["Details"], profileName)
-        end
-
-        if self.db.global.ImportedStrings["Bartender4"] then
-            ImportCondenser.Bartender:Import(self.db.global.ImportedStrings["Bartender4"], profileName)
-        end
-
-        if self.db.global.ImportedStrings["TwintopInsanityBar"] then
-            ImportCondenser.TwintopInsanityBar:Import(self.db.global.ImportedStrings["TwintopInsanityBar"], profileName)
-        end
-
-        if self.db.global.ImportedStrings["DandersFrames"] then
-            ImportCondenser.DandersFrames:Import(self.db.global.ImportedStrings["DandersFrames"], profileName)
+        for _, addonName in ipairs(addons) do
+            if self.db.global.ImportedStrings[addonName] then
+                local addonModule = ImportCondenser[addonName]
+                if addonModule and addonModule.Import then
+                    addonModule:Import(self.db.global.ImportedStrings[addonName], profileName)
+                end
+            end
         end
 
         print("Import successful for profile: " .. profileName)
@@ -284,18 +257,12 @@ end
 function ImportCondenser:GenerateExportString()
     local profileName = self.db.global.profileName or "DefaultProfile"
     local exports = {profileName = profileName}
-
-    print("Exporting")
-    ImportCondenser.NephUI:Export(exports)
-    ImportCondenser.Platynator:Export(exports)
-    ImportCondenser.Baganator:Export(exports)
-    ImportCondenser.Plater:Export(exports)
-    ImportCondenser.Details:Export(exports)
-    ImportCondenser.Bartender:Export(exports)
-    ImportCondenser.TwintopInsanityBar:Export(exports)
-    ImportCondenser.DandersFrames:Export(exports)
-    ImportCondenser.EditMode:Export(exports)
-
+    for _, addonName in ipairs(addons) do
+        local addonModule = ImportCondenser[addonName]
+        if addonModule and addonModule.Export then
+            addonModule:Export(exports)
+        end
+    end
     return C_EncodingUtil.SerializeJSON(exports)
 end
 
@@ -394,6 +361,7 @@ function ImportCondenser:SeriPressCode(dataTable)
         return nil
     end
 end
+
 function ImportCondenser:CopyTable(src, dest)
 	if type(dest) ~= "table" then dest = {} end
 	if type(src) == "table" then

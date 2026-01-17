@@ -4,6 +4,14 @@ local ImportCondenser = ns.Addon
 ImportCondenser.EditMode = {}
 
 function ImportCondenser.EditMode:Import(importString, profileName)
+    if not C_EditMode or
+       type(C_EditMode.ConvertStringToLayoutInfo) ~= "function" or
+       type(C_EditMode.GetLayouts) ~= "function" or
+       type(C_EditMode.SaveLayouts) ~= "function" or
+       type(C_EditMode.SetActiveLayout) ~= "function"
+    then
+        return
+    end
     local layout = C_EditMode.ConvertStringToLayoutInfo(importString)
     layout.layoutName = profileName
     layout.layoutType = 1 -- set to account layout

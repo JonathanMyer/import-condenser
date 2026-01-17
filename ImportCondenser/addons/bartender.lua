@@ -7,9 +7,9 @@ local LibDualSpec   = LibStub("LibDualSpec-1.0", true)
 local AceSerializer = LibStub("AceSerializer-3.0", true)
 local LibDeflate = LibStub("LibDeflate", true)
 
-ImportCondenser.Bartender = {}
+ImportCondenser.Bartender4 = {}
 
-function ImportCondenser.Bartender:Import(importStr, profileName)
+function ImportCondenser.Bartender4:Import(importStr, profileName)
     local Bartender = AceAddon and AceAddon:GetAddon("Bartender4", true)
 
     local profileOptions
@@ -57,7 +57,7 @@ function ImportCondenser.Bartender:Import(importStr, profileName)
     end
 end
 
-function ImportCondenser.Bartender:Export(exports)
+function ImportCondenser.Bartender4:Export(exports)
     local Bartender = AceAddon and AceAddon:GetAddon("Bartender4", true)
 	if not Bartender then
 		return
