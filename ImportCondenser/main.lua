@@ -16,6 +16,7 @@ ImportCondenser.DEBUG = true
 local LibDualSpec   = LibStub("LibDualSpec-1.0", true)
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 
 
 function ImportCondenser:OnInitialize()
@@ -43,26 +44,26 @@ function ImportCondenser:IsAddonLoaded(addonName)
     return C_AddOns and C_AddOns.IsAddOnLoaded(addonName) or (IsAddOnLoaded and IsAddOnLoaded(addonName))
 end
 
-
 function ns.GenerateSection(addonName, order)
     return {
         type = "group",
         name = addonName,
         order = order,
-        hidden = function() 
-            return not ImportCondenser:IsAddonLoaded(addonName)
-        end,
+        -- hidden = function() 
+        --     return not ImportCondenser:IsAddonLoaded(addonName)
+        -- end,
         inline = true,
         args = {
             status = {
                 type = "description",
-                name = "Loaded",
+                name = function()
+                    local loaded = ImportCondenser:IsAddonLoaded(addonName) and "|cff00ff00Loaded|r" or "|cffff0000Not Loaded|r"
+                    local hasImport = ImportCondenser.db and ImportCondenser.db.global.ImportedStrings and ImportCondenser.db.global.ImportedStrings[addonName] ~= nil
+                    local imported = hasImport and "|cff00ff00Parsed|r" or "|cffaaaaaa---"
+                    return string.format("%-20s  %s", loaded, imported)
+                end,
+                fontSize = "medium",
                 order = 1,
-            },
-            parsed = {
-                type = "description",
-                name = "Something",
-                order = 2,
             },
         },
     }
@@ -122,15 +123,26 @@ function ns.SetupOptions(self)
                         end,
                         order = 2,
                     },
-                    nephUISection = ns.GenerateSection("NephUI", 3),
-                    editModeSection = ns.GenerateSection("EditMode", 4),
-                    platynatorSection = ns.GenerateSection("Platynator", 5),
-                    baganatorSection = ns.GenerateSection("Baganator", 6),
-                    platerSection = ns.GenerateSection("Plater", 7),
-                    detailsSection = ns.GenerateSection("Details", 8),
-                    bartenderSection = ns.GenerateSection("Bartender4", 9),
-                    twintopInsanityBarSection = ns.GenerateSection("TwintopInsanityBar", 10),
-                    dandersFramesSection = ns.GenerateSection("DandersFrames", 11),
+                    clearImport = {
+                        type = "execute",
+                        name = "Clear",
+                        desc = "Clear the parsed import data.",
+                        width = "half",
+                        func = function()
+                            ImportCondenser.db.global.ImportedStrings = nil
+                            AceConfigRegistry:NotifyChange(ADDON_NAME)
+                        end,
+                        order = 3,
+                    },
+                    nephUISection = ns.GenerateSection("NephUI", 4),
+                    editModeSection = ns.GenerateSection("EditMode", 5),
+                    platynatorSection = ns.GenerateSection("Platynator", 6),
+                    baganatorSection = ns.GenerateSection("Baganator", 7),
+                    platerSection = ns.GenerateSection("Plater", 8),
+                    detailsSection = ns.GenerateSection("Details", 9),
+                    bartenderSection = ns.GenerateSection("Bartender4", 10),
+                    twintopInsanityBarSection = ns.GenerateSection("TwintopInsanityBar", 11),
+                    dandersFramesSection = ns.GenerateSection("DandersFrames", 12),
                 },
             },
             exportTab = {
@@ -186,6 +198,8 @@ end
 
 function ImportCondenser:ParseImportString(importStr)
     self.db.global.ImportedStrings = C_EncodingUtil.DeserializeJSON(importStr)
+    -- Refresh the UI to show updated parse status
+    -- AceConfigRegistry:NotifyChange(ADDON_NAME)
 end
 
 function ImportCondenser:Import()
@@ -220,8 +234,8 @@ function ImportCondenser:Import()
             ImportCondenser.Details:Import(self.db.global.ImportedStrings["Details"], profileName)
         end
 
-        if self.db.global.ImportedStrings["Bartender"] then
-            ImportCondenser.Bartender:Import(self.db.global.ImportedStrings["Bartender"], profileName)
+        if self.db.global.ImportedStrings["Bartender4"] then
+            ImportCondenser.Bartender:Import(self.db.global.ImportedStrings["Bartender4"], profileName)
         end
 
         if self.db.global.ImportedStrings["TwintopInsanityBar"] then
@@ -233,6 +247,9 @@ function ImportCondenser:Import()
         end
 
         print("Import successful for profile: " .. profileName)
+        self.db.global.ImportedStrings = nil
+        -- Refresh the UI to clear parse status after import
+        AceConfigRegistry:NotifyChange(ADDON_NAME)
     else
         print("Import failed: " .. (err or "Invalid format."))
     end

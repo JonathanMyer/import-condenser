@@ -92,7 +92,7 @@ function ImportCondenser.Bartender:Export(exports)
 		local encoded = LibDeflate:EncodeForPrint(compressed)
 		
 		if encoded then
-			exports["Bartender"] = encoded
+			exports["Bartender4"] = encoded
 		end
 	end
 end
