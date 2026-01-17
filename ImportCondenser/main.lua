@@ -18,6 +18,17 @@ local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 
+local addons = {
+    "NephUI",
+    "EditMode",
+    "Platynator",
+    "Baganator",
+    "Plater",
+    "Details",
+    "Bartender4",
+    "TwintopInsanityBar",
+    "DandersFrames"
+}
 
 function ImportCondenser:OnInitialize()
     -- Called when the addon is loaded
@@ -47,23 +58,32 @@ end
 function ns.GenerateSection(addonName, order)
     return {
         type = "group",
-        name = addonName,
-        order = order,
-        -- hidden = function() 
-        --     return not ImportCondenser:IsAddonLoaded(addonName)
-        -- end,
+        name = "",
         inline = true,
+        order = order,
         args = {
-            status = {
+            addon = {
+                type = "description",
+                name = addonName,
+                width = 0.6,
+                order = 1,
+            },
+            loaded = {
                 type = "description",
                 name = function()
-                    local loaded = ImportCondenser:IsAddonLoaded(addonName) and "|cff00ff00Loaded|r" or "|cffff0000Not Loaded|r"
-                    local hasImport = ImportCondenser.db and ImportCondenser.db.global.ImportedStrings and ImportCondenser.db.global.ImportedStrings[addonName] ~= nil
-                    local imported = hasImport and "|cff00ff00Parsed|r" or "|cffaaaaaa---"
-                    return string.format("%-20s  %s", loaded, imported)
+                    return ImportCondenser:IsAddonLoaded(addonName) and "|cff00ff00Loaded|r" or "|cffff0000Not Loaded|r"
                 end,
-                fontSize = "medium",
-                order = 1,
+                width = 0.5,
+                order = 2,
+            },
+            parsed = {
+                type = "description",
+                name = function()
+                    local hasImport = ImportCondenser.db and ImportCondenser.db.global.ImportedStrings and ImportCondenser.db.global.ImportedStrings[addonName] ~= nil
+                    return hasImport and "|cff00ff00Parsed|r" or "|cffaaaaaa---"
+                end,
+                width = 0.5,
+                order = 3,
             },
         },
     }
@@ -124,15 +144,19 @@ function ns.SetupOptions(self)
                         end,
                         order = 2,
                     },
-                    nephUISection = ns.GenerateSection("NephUI", 4),
-                    editModeSection = ns.GenerateSection("EditMode", 5),
-                    platynatorSection = ns.GenerateSection("Platynator", 6),
-                    baganatorSection = ns.GenerateSection("Baganator", 7),
-                    platerSection = ns.GenerateSection("Plater", 8),
-                    detailsSection = ns.GenerateSection("Details", 9),
-                    bartenderSection = ns.GenerateSection("Bartender4", 10),
-                    twintopInsanityBarSection = ns.GenerateSection("TwintopInsanityBar", 11),
-                    dandersFramesSection = ns.GenerateSection("DandersFrames", 12),
+                    addonGroup = {
+                        type = "group",
+                        name = "Addons",
+                        inline = true,
+                        order = 3,
+                        args = (function()
+                            local args = {}
+                            for i, addonName in ipairs(addons) do
+                                args[addonName .. "Section"] = ns.GenerateSection(addonName, i)
+                            end
+                            return args
+                        end)(),
+                    },
                 },
             },
             exportTab = {
@@ -167,16 +191,19 @@ function ns.SetupOptions(self)
                         end,
                         order = 2,
                     },
-                    -- Addon sections
-                    nephUISection = ns.GenerateSection("NephUI", 3),
-                    editModeSection = ns.GenerateSection("EditMode", 4),
-                    platynatorSection = ns.GenerateSection("Platynator", 5),
-                    baganatorSection = ns.GenerateSection("Baganator", 6),
-                    platerSection = ns.GenerateSection("Plater", 7),
-                    detailsSection = ns.GenerateSection("Details", 8),
-                    bartenderSection = ns.GenerateSection("Bartender4", 9),
-                    twintopInsanityBarSection = ns.GenerateSection("TwintopInsanityBar", 10),
-                    dandersFramesSection = ns.GenerateSection("DandersFrames", 11),
+                    addonGroup = {
+                        type = "group",
+                        name = "Addons",
+                        inline = true,
+                        order = 3,
+                        args = (function()
+                            local args = {}
+                            for i, addonName in ipairs(addons) do
+                                args[addonName .. "Section"] = ns.GenerateSection(addonName, i)
+                            end
+                            return args
+                        end)(),
+                    },
                 },
             },
         },
