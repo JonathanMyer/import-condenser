@@ -89,7 +89,7 @@ function ns.GenerateSection(addonName, order)
             parsed = {
                 type = "description",
                 name = function()
-                    local hasImport = ImportCondenser.db and ImportCondenser.db.global.ImportedStrings and ImportCondenser.db.global.ImportedStrings[addonName] ~= nil
+                    local hasImport = ImportCondenser:IsAddonLoaded(addonName) and ImportCondenser.db and ImportCondenser.db.global.ImportedStrings and ImportCondenser.db.global.ImportedStrings[addonName] ~= nil
                     return hasImport and "|cff00ff00Ready to Import|r" or "|cffaaaaaa---"
                 end,
                 width = 0.5,
