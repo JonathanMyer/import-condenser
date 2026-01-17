@@ -160,7 +160,7 @@ function ns.SetupOptions(self)
                     },
                     addonGroup = {
                         type = "group",
-                        name = "Addons",
+                        name = "Addons            Status            Parse Status",
                         inline = true,
                         order = 3,
                         args = (function()
