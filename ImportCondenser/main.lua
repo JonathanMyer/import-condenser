@@ -140,6 +140,11 @@ function ImportCondenser:Import(importStr)
         if result["TwintopInsanityBar"] then
             ImportCondenser:ImportTwintopInsanityBar(result["TwintopInsanityBar"], profileName)
         end
+
+        if result["DandersFrames"] then
+            ImportCondenser:ImportDandersFrames(result["DandersFrames"], profileName)
+        end
+
         print("Import successful for profile: " .. profileName)
     else
         print("Import failed: " .. (err or "Invalid format."))
@@ -158,6 +163,7 @@ function ImportCondenser:GenerateExportString()
     ImportCondenser:ExportDetails(exports)
     ImportCondenser:ExportBartender(exports)
     ImportCondenser:ExportTwintopInsanityBar(exports)
+    ImportCondenser:ExportDandersFrames(exports)
     ImportCondenser:ExportEditMode(exports)
 
     return C_EncodingUtil.SerializeJSON(exports)
