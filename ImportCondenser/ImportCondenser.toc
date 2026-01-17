@@ -2,7 +2,7 @@
 ## Title: Import Condenser
 ## Notes: Import once for multiple different supported addons.
 ## Author: Ryepizor
-## Version: 1.0
+## Version: 1.5
 ## SavedVariables: ImportCondenserDB
 ## OptionalDeps: Ace3, LibSharedMedia-3.0
 ## X-TaintLess-DisableMitigations: CUF_PROFILE_ACTIVATE_PATCH_VERSION=1
@@ -34,3 +34,12 @@ libs\AceSerializer-3.0\AceSerializer-3.0.xml
 
 # Addon code
 main.lua
+addons/platynator.lua
+addons/baganator.lua
+addons/editMode.lua
+addons/nephUI.lua
+addons/plater.lua
+addons/details.lua
+addons/bartender.lua
+addons/twintopInsanityBar.lua
+addons/dandersFrames.lua
