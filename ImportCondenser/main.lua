@@ -44,55 +44,76 @@ function ns.SetupOptions(self)
         type = "group",
         name = ADDON_NAME,
         args = {
-            header = {
-                type = "header",
-                name = "Import/Export Settings",
-                order = 0,
-            },
-            profileName = {
-                type = "input",
-                name = "Export Profile Name",
-                desc = "Enter a name for the exported profile.",
-                get = function(info)
-                    return self.db.global.profileName or "DefaultProfile"
-                end,
-                set = function(info, value)
-                    self.db.global.profileName = value
-                end,
+            exportTab = {
+                type = "group",
+                name = "Export",
+                desc = "Export your addon profiles",
                 order = 1,
+                args = {
+                    header = {
+                        type = "header",
+                        name = "Export Settings",
+                        order = 0,
+                    },
+                    profileName = {
+                        type = "input",
+                        name = "Export Profile Name",
+                        desc = "Enter a name for the exported profile.",
+                        get = function(info)
+                            return self.db.global.profileName or "DefaultProfile"
+                        end,
+                        set = function(info, value)
+                            self.db.global.profileName = value
+                        end,
+                        order = 1,
+                    },
+                    exportNephUI = {
+                        type = "execute",
+                        name = "Export Current Profiles",
+                        desc = "Export current profile to string.",
+                        func = function()
+                            ImportCondenser:ShowExportWindow()
+                        end,
+                        order = 2,
+                    },
+                },
             },
-            exportNephUI = {
-                type = "execute",
-                name = "Export Current Profiles",
-                desc = "Export current profile to string.",
-                func = function()
-                    ImportCondenser:ShowExportWindow()
-                end,
+            importTab = {
+                type = "group",
+                name = "Import",
+                desc = "Import addon profiles",
                 order = 2,
-            },
-            importProfile = {
-                type = "input",
-                name = "Import Profiles",
-                desc = "Paste a profile string here to import. Only strings exported from this addon are supported.",
-                multiline = true,
-                width = "full",
-                get = function()
-                    return tempImportText
-                end,
-                set = function(info, value)
-                    tempImportText = value
-                    ImportCondenser:Import(value)
-                end,
-                order = 3,
-            },
-            reloadUi = {
-                type = "execute",
-                name = "Reload UI",
-                desc = "Reload the user interface to apply changes.",
-                func = function()
-                    ReloadUI()
-                end,
-                order = 4,
+                args = {
+                    header = {
+                        type = "header",
+                        name = "Import Settings",
+                        order = 0,
+                    },
+                    importProfile = {
+                        type = "input",
+                        name = "Import Profiles",
+                        desc = "Paste a profile string here to import. Only strings exported from this addon are supported.",
+                        multiline = true,
+                        width = "full",
+                        get = function()
+                            return tempImportText
+                        end,
+                        set = function(info, value)
+                            tempImportText = value
+                            ImportCondenser:Import(value)
+                        end,
+                        order = 1,
+                    },
+                    reloadUi = {
+                        type = "execute",
+                        name = "Reload UI",
+                        desc = "Reload the user interface to apply changes.",
+                        func = function()
+                            ReloadUI()
+                        end,
+                        order = 2,
+                    },
+                },
             },
         },
     }
