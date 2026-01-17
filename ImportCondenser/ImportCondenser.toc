@@ -34,4 +34,12 @@ libs\AceSerializer-3.0\AceSerializer-3.0.xml
 
 # Addon code
 main.lua
-addons/*.lua
+addons/platynator.lua
+addons/baganator.lua
+addons/editMode.lua
+addons/nephUI.lua
+addons/plater.lua
+addons/details.lua
+addons/bartender.lua
+addons/twintopInsanityBar.lua
+addons/dandersFrames.lua
