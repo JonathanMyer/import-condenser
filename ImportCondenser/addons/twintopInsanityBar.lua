@@ -4,28 +4,37 @@ local ImportCondenser = ns.Addon
 ImportCondenser.TwintopInsanityBar = {}
 -- ImportCondenser.db.global.TwintopInsanityBar = {}
 
-function ImportCondenser.TwintopInsanityBar:GetOptions()
-    local higherOptions = {
-        "core"
-    }
-    for i, className in ipairs(ImportCondenser.ClassNames) do
-        table.insert(higherOptions, className)
-    end
-    ImportCondenser:AddToInspector(higherOptions, "TwintopInsanityBar")
-    return higherOptions
+local AllOptions = {
+    "Core"
+}
+for i, className in ipairs(ImportCondenser.ClassNames) do
+    table.insert(AllOptions, className)
 end
+
+function ImportCondenser.TwintopInsanityBar:GetExportOptions()
+    return AllOptions
+end
+
 
 function ImportCondenser.TwintopInsanityBar:DetectIssues(importString)
    if _G.Twintop_Data and _G.Twintop_Data.settings then
         local asTable = ImportCondenser:DeSeriPressCode(importString)
+        local returnList = {}
+        for k, v in pairs(asTable) do
+            table.insert(returnList, k:sub(1,1):upper() .. k:sub(2))
+        end
+        return returnList
     end 
 end
 
 function ImportCondenser.TwintopInsanityBar:Import(importString)
     if _G.Twintop_Data and _G.Twintop_Data.settings then
-        print("Importing Twintop Insanity Bar settings...")
         local asTable = ImportCondenser:DeSeriPressCode(importString)
-        ImportCondenser:CopyTable(asTable, _G.Twintop_Data.settings)
+        for k, v in pairs(asTable) do
+            if ImportCondenser.db.global.TwintopInsanityBar.selectedImportOptions[k] == true then
+                ImportCondenser:CopyTable(v, _G.Twintop_Data.settings[k])
+            end
+        end
     end
 end
 
