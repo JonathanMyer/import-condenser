@@ -28,8 +28,16 @@ function ImportCondenser:GetAddonModules()
                 table.insert(addons, key)
             end
         end
-        -- Sort alphabetically for consistent ordering
-        table.sort(addons)
+        -- Sort with DetectIssues addons first, then alphabetically
+        table.sort(addons, function(a, b)
+            local aHasDetect = ImportCondenser[a] and ImportCondenser[a].DetectIssues ~= nil
+            local bHasDetect = ImportCondenser[b] and ImportCondenser[b].DetectIssues ~= nil
+            
+            if aHasDetect ~= bHasDetect then
+                return aHasDetect -- a comes first if it has DetectIssues
+            end
+            return a < b -- Otherwise sort alphabetically
+        end)
     end
     return addons
 end
@@ -75,7 +83,7 @@ function ns.GenerateImportSection(addonName, order)
             addon = {
                 type = "description",
                 name = addonName,
-                width = 0.6,
+                width = 0.7,
                 order = 1,
             },
             loaded = {
@@ -99,6 +107,8 @@ function ns.GenerateImportSection(addonName, order)
                         local issues = addonModule:DetectIssues(ImportCondenser.db.global.ImportedStrings[addonName])
                         if issues and type(issues) == "string" then
                             return "|cffff0000" .. issues .. "|r"
+                        elseif issues and type(issues) == "table" and #issues > 0 then
+                            return "|cffffff00Options available|r"
                         end
                     end
                     return readyToImport and "|cff00ff00Ready to Import|r" or "|cffaaaaaa---"
@@ -283,7 +293,7 @@ function ns.SetupOptions(self)
                     },
                     addonGroup = {
                         type = "group",
-                        name = "Addons            Status            Parse Status",
+                        name = "Addons                     Status              Parse Status",
                         inline = true,
                         order = 3,
                         args = (function()
