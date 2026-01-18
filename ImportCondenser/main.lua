@@ -65,7 +65,7 @@ function ImportCondenser:IsAddonLoaded(addonName)
     return C_AddOns and C_AddOns.IsAddOnLoaded(addonName) or (IsAddOnLoaded and IsAddOnLoaded(addonName))
 end
 
-function ns.GenerateSection(addonName, order)
+function ns.GenerateImportSection(addonName, order)
     return {
         type = "group",
         name = "",
@@ -107,6 +107,66 @@ function ns.GenerateSection(addonName, order)
                 order = 3,
             },
         },
+    }
+end
+
+function ns.GenerateExportSection(addonName, order)
+    return {
+        type = "group",
+        name = addonName,
+        hidden = function()
+            local addonModule = ImportCondenser[addonName]
+            if addonModule and addonModule.GetOptions then
+                return not ImportCondenser:IsAddonLoaded(addonName)
+            end
+            return true
+        end,
+        inline = true,
+        order = order,
+        args = (function()
+            local addonModule = ImportCondenser[addonName]
+            local addonDb = ImportCondenser.db.global[addonName]
+            if not addonModule or not addonModule.GetOptions then
+                return {}
+            end
+            
+            -- Initialize addon namespace if it doesn't exist
+            if not addonDb then
+                ImportCondenser.db.global[addonName] = {}
+                addonDb = ImportCondenser.db.global[addonName]
+            end
+            
+            local options = addonModule:GetOptions()
+            if not options or type(options) ~= "table" then
+                return {}
+            end
+
+            local playerClass = select(1, UnitClass("player"))
+            
+            -- Initialize selectedOptions table if it doesn't exist
+            addonDb.selectedExportOptions = addonDb.selectedExportOptions or {[playerClass:lower()] = true}
+            
+            local checkboxArgs = {}
+            for i, option in ipairs(options) do
+                local optionName = type(option) == "table" and option.name or option
+                local optionDesc = type(option) == "table" and option.desc or ""
+                
+                checkboxArgs["option" .. i] = {
+                    type = "toggle",
+                    name = optionName,
+                    desc = optionDesc,
+                    get = function()
+                        return addonDb.selectedExportOptions[optionName:lower()] or false
+                    end,
+                    set = function(info, value)
+                        addonDb.selectedExportOptions[optionName:lower()] = value
+                    end,
+                    width = .75,
+                    order = i,
+                }
+            end
+            return checkboxArgs
+        end)(),
     }
 end
 
@@ -184,7 +244,7 @@ function ns.SetupOptions(self)
                         args = (function()
                             local args = {}
                             for i, addonName in ipairs(addons) do
-                                args[addonName .. "Section"] = ns.GenerateSection(addonName, i)
+                                args[addonName .. "Section"] = ns.GenerateImportSection(addonName, i)
                             end
                             return args
                         end)(),
@@ -223,19 +283,19 @@ function ns.SetupOptions(self)
                         end,
                         order = 2,
                     },
-                    -- addonGroup = {
-                    --     type = "group",
-                    --     name = "Addons",
-                    --     inline = true,
-                    --     order = 3,
-                    --     args = (function()
-                    --         local args = {}
-                    --         for i, addonName in ipairs(addons) do
-                    --             args[addonName .. "Section"] = ns.GenerateSection(addonName, i)
-                    --         end
-                    --         return args
-                    --     end)(),
-                    -- },
+                    addonGroup = {
+                        type = "group",
+                        name = "Export Options",
+                        inline = true,
+                        order = 3,
+                        args = (function()
+                            local args = {}
+                            for i, addonName in ipairs(addons) do
+                                args[addonName .. "Section"] = ns.GenerateExportSection(addonName, i)
+                            end
+                            return args
+                        end)(),
+                    },
                 },
             },
         },
@@ -381,6 +441,7 @@ function ImportCondenser:SeriPressCode(dataTable)
 end
 
 function ImportCondenser:CopyTable(src, dest)
+    print("Copying table destType:" .. type(dest) .. " srcType:" .. type(src))
 	if type(dest) ~= "table" then dest = {} end
 	if type(src) == "table" then
 		for k,v in pairs(src) do
@@ -404,3 +465,20 @@ function ImportCondenser:CountKeys(table)
     end
     return count
 end
+
+ImportCondenser.ClassNames = {
+    [1] = "Warrior",
+    [2] = "Paladin",
+    [3] = "Hunter",
+    [4] = "Rogue",
+    [5] = "Priest",
+    [6] = "DeathKnight",
+    [7] = "Shaman",
+    [8] = "Mage",
+    [9] = "Warlock",
+    [10] = "Monk",
+    [11] = "Druid",
+    [12] = "DemonHunter",
+    [13] = "Evoker"
+}
+	
