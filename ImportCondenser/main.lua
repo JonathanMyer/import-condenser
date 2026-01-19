@@ -357,7 +357,12 @@ function ns.SetupOptions(self)
     }
 
     AceConfig:RegisterOptionsTable(ADDON_NAME, options)
-    AceConfigDialog:AddToBlizOptions(ADDON_NAME, ADDON_NAME)
+    
+    -- Only add to Blizzard options the first time
+    if not ns.blizOptionsAdded then
+        AceConfigDialog:AddToBlizOptions(ADDON_NAME, ADDON_NAME)
+        ns.blizOptionsAdded = true
+    end
 end
 
 function ImportCondenser:ParseImportString(importStr)
