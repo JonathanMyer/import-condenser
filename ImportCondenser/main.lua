@@ -28,8 +28,16 @@ function ImportCondenser:GetAddonModules()
                 table.insert(addons, key)
             end
         end
-        -- Sort alphabetically for consistent ordering
-        table.sort(addons)
+        -- Sort with DetectIssues addons first, then alphabetically
+        table.sort(addons, function(a, b)
+            local aHasDetect = ImportCondenser[a] and ImportCondenser[a].DetectIssues ~= nil
+            local bHasDetect = ImportCondenser[b] and ImportCondenser[b].DetectIssues ~= nil
+            
+            if aHasDetect ~= bHasDetect then
+                return aHasDetect -- a comes first if it has DetectIssues
+            end
+            return a < b -- Otherwise sort alphabetically
+        end)
     end
     return addons
 end
@@ -65,7 +73,7 @@ function ImportCondenser:IsAddonLoaded(addonName)
     return C_AddOns and C_AddOns.IsAddOnLoaded(addonName) or (IsAddOnLoaded and IsAddOnLoaded(addonName))
 end
 
-function ns.GenerateSection(addonName, order)
+function ns.GenerateImportSection(addonName, order)
     return {
         type = "group",
         name = "",
@@ -75,7 +83,7 @@ function ns.GenerateSection(addonName, order)
             addon = {
                 type = "description",
                 name = addonName,
-                width = 0.6,
+                width = 0.7,
                 order = 1,
             },
             loaded = {
@@ -97,8 +105,10 @@ function ns.GenerateSection(addonName, order)
                         addonModule ~= nil
                     if readyToImport and addonModule and addonModule.DetectIssues then
                         local issues = addonModule:DetectIssues(ImportCondenser.db.global.ImportedStrings[addonName])
-                        if issues then
+                        if issues and type(issues) == "string" then
                             return "|cffff0000" .. issues .. "|r"
+                        elseif issues and type(issues) == "table" and #issues > 0 then
+                            return "|cffffff00Options available|r"
                         end
                     end
                     return readyToImport and "|cff00ff00Ready to Import|r" or "|cffaaaaaa---"
@@ -106,7 +116,112 @@ function ns.GenerateSection(addonName, order)
                 width = "fill",
                 order = 3,
             },
+            options = {
+                type = "group",
+                name = "",
+                inline = true,
+                order = 4,
+                args = (function()
+                    local addonModule = ImportCondenser[addonName]
+                    local checkboxArgs = {}
+                    if addonModule and addonModule.DetectIssues then
+                        local issues = addonModule:DetectIssues(ImportCondenser.db.global.ImportedStrings and ImportCondenser.db.global.ImportedStrings[addonName] or "")
+                        if issues and type(issues) == "table" and #issues > 0 then
+                            local addonDb = ImportCondenser.db.global[addonName]
+                            if not addonDb then
+                                ImportCondenser.db.global[addonName] = {}
+                                addonDb = ImportCondenser.db.global[addonName]
+                            end
+
+                            local playerClass = select(1, UnitClass("player"))
+                            
+                            -- Initialize selectedOptions table if it doesn't exist
+                            addonDb.selectedImportOptions = addonDb.selectedImportOptions or {[playerClass:lower()] = true}
+                            
+                            for i, option in ipairs(issues) do
+                                local optionName = type(option) == "table" and option.name or option
+                                local optionDesc = type(option) == "table" and option.desc or ""
+                                
+                                checkboxArgs["option" .. i] = {
+                                    type = "toggle",
+                                    name = optionName,
+                                    desc = optionDesc,
+                                    get = function()
+                                        return addonDb.selectedImportOptions[optionName:lower()] or false
+                                    end,
+                                    set = function(info, value)
+                                        addonDb.selectedImportOptions[optionName:lower()] = value
+                                    end,
+                                    width = .75,
+                                    order = i,
+                                }
+                            end
+                        end
+                    end
+                    return checkboxArgs
+                end)(),
+            },
         },
+    }
+end
+
+function ns.GenerateExportSection(addonName, order)
+    return {
+        type = "group",
+        name = addonName,
+        hidden = function()
+            local addonModule = ImportCondenser[addonName]
+            if addonModule and addonModule.GetExportOptions then
+                return not ImportCondenser:IsAddonLoaded(addonName)
+            end
+            return true
+        end,
+        inline = true,
+        order = order,
+        args = (function()
+            local addonModule = ImportCondenser[addonName]
+            local addonDb = ImportCondenser.db.global[addonName]
+            if not addonModule or not addonModule.GetExportOptions then
+                return {}
+            end
+            
+            -- Initialize addon namespace if it doesn't exist
+            if not addonDb then
+                ImportCondenser.db.global[addonName] = {}
+                addonDb = ImportCondenser.db.global[addonName]
+            end
+            
+            local options = addonModule:GetExportOptions()
+            if not options or type(options) ~= "table" then
+                return {}
+            end
+
+            local playerClass = select(1, UnitClass("player"))
+            
+            -- Initialize selectedOptions table if it doesn't exist
+            addonDb.selectedExportOptions = addonDb.selectedExportOptions or {[playerClass:lower()] = true}
+            
+            local checkboxArgs = {}
+            for i, option in ipairs(options) do
+                local optionName = type(option) == "table" and option.name or option
+                local optionDesc = type(option) == "table" and option.desc or ""
+                
+                checkboxArgs["option" .. i] = {
+                    type = "toggle",
+                    name = optionName,
+                    desc = optionDesc,
+                    get = function()
+                        return addonDb.selectedExportOptions[optionName:lower()] or false
+                    end,
+                    set = function(info, value)
+                        addonDb.selectedExportOptions[optionName:lower()] = value
+                    end,
+                    width = .75,
+                    order = i,
+                }
+            end
+            return checkboxArgs
+        end)(),
     }
 end
 
@@ -178,13 +293,13 @@ function ns.SetupOptions(self)
                     },
                     addonGroup = {
                         type = "group",
-                        name = "Addons            Status            Parse Status",
+                        name = "Addons                     Status              Parse Status",
                         inline = true,
                         order = 3,
                         args = (function()
                             local args = {}
                             for i, addonName in ipairs(addons) do
-                                args[addonName .. "Section"] = ns.GenerateSection(addonName, i)
+                                args[addonName .. "Section"] = ns.GenerateImportSection(addonName, i)
                             end
                             return args
                         end)(),
@@ -223,30 +338,37 @@ function ns.SetupOptions(self)
                         end,
                         order = 2,
                     },
-                    -- addonGroup = {
-                    --     type = "group",
-                    --     name = "Addons",
-                    --     inline = true,
-                    --     order = 3,
-                    --     args = (function()
-                    --         local args = {}
-                    --         for i, addonName in ipairs(addons) do
-                    --             args[addonName .. "Section"] = ns.GenerateSection(addonName, i)
-                    --         end
-                    --         return args
-                    --     end)(),
-                    -- },
+                    addonGroup = {
+                        type = "group",
+                        name = "Export Options",
+                        inline = true,
+                        order = 3,
+                        args = (function()
+                            local args = {}
+                            for i, addonName in ipairs(addons) do
+                                args[addonName .. "Section"] = ns.GenerateExportSection(addonName, i)
+                            end
+                            return args
+                        end)(),
+                    },
                 },
             },
         },
     }
 
     AceConfig:RegisterOptionsTable(ADDON_NAME, options)
-    AceConfigDialog:AddToBlizOptions(ADDON_NAME, ADDON_NAME)
+    
+    -- Only add to Blizzard options the first time
+    if not ns.blizOptionsAdded then
+        AceConfigDialog:AddToBlizOptions(ADDON_NAME, ADDON_NAME)
+        ns.blizOptionsAdded = true
+    end
 end
 
 function ImportCondenser:ParseImportString(importStr)
     self.db.global.ImportedStrings = C_EncodingUtil.DeserializeJSON(importStr)
+    -- Rebuild options table to regenerate import sections
+    ns.SetupOptions(self)
     -- Refresh the UI to show updated parse status
     AceConfigRegistry:NotifyChange(ADDON_NAME)
 end
@@ -404,3 +526,20 @@ function ImportCondenser:CountKeys(table)
     end
     return count
 end
+
+ImportCondenser.ClassNames = {
+    [1] = "Warrior",
+    [2] = "Paladin",
+    [3] = "Hunter",
+    [4] = "Rogue",
+    [5] = "Priest",
+    [6] = "DeathKnight",
+    [7] = "Shaman",
+    [8] = "Mage",
+    [9] = "Warlock",
+    [10] = "Monk",
+    [11] = "Druid",
+    [12] = "DemonHunter",
+    [13] = "Evoker"
+}
+	
