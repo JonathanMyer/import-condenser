@@ -36,3 +36,4 @@ addons/details.lua
 addons/bartender.lua
 addons/twintopInsanityBar.lua
 addons/dandersFrames.lua
+addons/unhaltedUnitFrames.lua
