@@ -20,6 +20,9 @@ end
 
 function ImportCondenser.PlayersCastbars:Export(exports)
     local PlayersCastbars = AceAddon and AceAddon:GetAddon("PlayersCastbars", true)
+    if not PlayersCastbars then
+        return
+    end
     local profile = {}
     local target = {}
     local focus = {}
