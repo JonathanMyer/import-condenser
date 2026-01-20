@@ -39,3 +39,4 @@ addons/dandersFrames.lua
 addons/unhaltedUnitFrames.lua
 addons/playersCastbars.lua
 addons/tellMeWhen.lua
+addons/bigWigs.lua
