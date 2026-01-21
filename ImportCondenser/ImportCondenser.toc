@@ -42,3 +42,4 @@ addons/tellMeWhen.lua
 addons/bigWigs.lua
 addons/midnightSimpleUnitFrames.lua
 addons/cooldownManagerCentered.lua
+addons/senseiClassResourceBar.lua
