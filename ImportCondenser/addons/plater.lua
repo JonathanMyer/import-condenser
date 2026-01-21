@@ -9,7 +9,9 @@ local DB_CAPTURED_SPELLS = {}
 local DB_CAPTURED_CASTS = {}
 
 function ImportCondenser.Plater:Import(importStr, profileName)
-    Plater.ImportAndSwitchProfile(profileName, importStr, false, false, true)
+    if Plater and type(Plater) == "table" and type(Plater.ImportAndSwitchProfile) == "function" then
+        Plater.ImportAndSwitchProfile(profileName, importStr, false, false, true)
+    end
 end
 
 function ImportCondenser.Plater:Export(exports)
