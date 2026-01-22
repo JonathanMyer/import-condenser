@@ -110,8 +110,8 @@ function ns.GenerateImportSection(addonName, order)
                         local issues = addonModule:DetectIssues(ImportCondenser.db.global.ImportedStrings[addonName])
                         if issues and type(issues) == "string" then
                             return "|cffff0000" .. issues .. "|r"
-                        elseif issues and type(issues) == "table" and #issues > 0 then
-                            return "|cffffff00Options available|r"
+                        elseif issues and type(issues) == "table" and #issues.options and #issues.options > 0 then
+                            return issues.message and "|cffffff00" .. issues.message .. "|r" or "|cffffff00Options available|r"
                         end
                     end
                     return readyToImport and "|cff00ff00Ready to Import|r" or "|cffaaaaaa---"
@@ -129,7 +129,7 @@ function ns.GenerateImportSection(addonName, order)
                     local checkboxArgs = {}
                     if addonModule and addonModule.DetectIssues then
                         local issues = addonModule:DetectIssues(ImportCondenser.db.global.ImportedStrings and ImportCondenser.db.global.ImportedStrings[addonName] or "")
-                        if issues and type(issues) == "table" and #issues > 0 then
+                        if issues and issues.options and type(issues.options) == "table" and #issues.options > 0 then
                             local addonDb = ImportCondenser.db.global[addonName]
                             if not addonDb then
                                 ImportCondenser.db.global[addonName] = {}
@@ -141,7 +141,7 @@ function ns.GenerateImportSection(addonName, order)
                             -- Initialize selectedOptions table if it doesn't exist
                             addonDb.selectedImportOptions = addonDb.selectedImportOptions or {[playerClass:lower()] = true}
                             
-                            for i, option in ipairs(issues) do
+                            for i, option in ipairs(issues.options) do
                                 local optionName = type(option) == "table" and option.name or option
                                 local optionDesc = type(option) == "table" and option.desc or ""
                                 
