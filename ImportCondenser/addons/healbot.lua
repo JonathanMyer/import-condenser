@@ -88,7 +88,6 @@ function ImportCondenser.Healbot:Export(table)
                 profileList[k] = ImportCondenser:SeriPressCode(profileList[k])
             end
         end
-        local AceSerializer = LibStub("AceSerializer-3.0", true)
         table["Healbot"] = profileList
     end
 end
