@@ -12,7 +12,7 @@ for i, className in ipairs(ImportCondenser.ClassNames) do
 end
 
 function ImportCondenser.TwintopInsanityBar:GetExportOptions()
-    return AllOptions
+    return AllOptions, {[1] = UnitClass("player")}, true
 end
 
 

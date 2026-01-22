@@ -4,7 +4,7 @@ local ImportCondenser = ns.Addon
 ImportCondenser.CooldownManager = {}
 
 function ImportCondenser.CooldownManager:GetExportOptions()
-    return {"Export"}
+    return {"Export"}, {}, true
 end
 
 function ImportCondenser.CooldownManager:DetectIssues(importString)

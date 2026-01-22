@@ -194,15 +194,23 @@ function ns.GenerateExportSection(addonName, order)
                 addonDb = ImportCondenser.db.global[addonName]
             end
             
-            local options = addonModule:GetExportOptions()
+            local options, defaults, storeAsLower = addonModule:GetExportOptions()
+            if storeAsLower == nil then
+                storeAsLower = true
+            end
             if not options or type(options) ~= "table" then
                 return {}
             end
 
-            local playerClass = select(1, UnitClass("player"))
-            
             -- Initialize selectedOptions table if it doesn't exist
-            addonDb.selectedExportOptions = addonDb.selectedExportOptions or {[playerClass:lower()] = true}
+            if not addonDb.selectedExportOptions then
+                addonDb.selectedExportOptions = {}
+                if defaults and type(defaults) == "table" then
+                    for _, defaultOption in ipairs(defaults) do
+                        addonDb.selectedExportOptions[storeAsLower and defaultOption:lower() or defaultOption] = true
+                    end
+                end
+            end
             
             local checkboxArgs = {}
             for i, option in ipairs(options) do
@@ -214,10 +222,10 @@ function ns.GenerateExportSection(addonName, order)
                     name = optionName,
                     desc = optionDesc,
                     get = function()
-                        return addonDb.selectedExportOptions[optionName:lower()] or false
+                        return addonDb.selectedExportOptions[storeAsLower and optionName:lower() or optionName] or false
                     end,
                     set = function(info, value)
-                        addonDb.selectedExportOptions[optionName:lower()] = value
+                        addonDb.selectedExportOptions[storeAsLower and optionName:lower() or optionName] = value
                     end,
                     width = .75,
                     order = i,
