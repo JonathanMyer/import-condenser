@@ -376,6 +376,20 @@ function ImportCondenser:ParseImportString(importStr)
     AceConfigRegistry:NotifyChange(ADDON_NAME)
 end
 
+-- Define static popup for reload UI prompt
+StaticPopupDialogs["IMPORTCONDENSER_RELOAD_UI"] = {
+    text = "Import successful! Please reload your UI to avoid issues.",
+    button1 = "Reload",
+    button2 = "Cancel",
+    OnAccept = function()
+        ReloadUI()
+    end,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    preferredIndex = 3,
+}
+
 function ImportCondenser:Import()
     if self.db.global.ImportedStrings and type(self.db.global.ImportedStrings) == "table" then
         local profileName = self.db.global.importProfileName ~= "" and self.db.global.importProfileName or self.db.global.ImportedStrings.profileName or "ImportedProfile"
@@ -391,6 +405,7 @@ function ImportCondenser:Import()
         end
 
         print("Import successful for profile: " .. profileName)
+        StaticPopup_Show("IMPORTCONDENSER_RELOAD_UI")
     else
         print("Import failed: " .. (err or "Invalid format."))
     end
