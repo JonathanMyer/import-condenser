@@ -23,7 +23,7 @@ function ImportCondenser.TwintopInsanityBar:DetectIssues(importString)
         for k, v in pairs(asTable) do
             table.insert(returnList, k:sub(1,1):upper() .. k:sub(2))
         end
-        return returnList
+        return {options = returnList}
     end 
 end
 

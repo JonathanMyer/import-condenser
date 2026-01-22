@@ -36,6 +36,7 @@ addons/bartender.lua
 addons/twintopInsanityBar.lua
 addons/dandersFrames.lua
 addons/unhaltedUnitFrames.lua
+addons/cooldownManager.lua
 addons/playersCastbars.lua
 addons/tellMeWhen.lua
 addons/bigWigs.lua

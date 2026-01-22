@@ -70,6 +70,9 @@ function ImportCondenser:IsAddonLoaded(addonName)
     if addonName == "EditMode" then
         return C_EditMode ~= nil
     end
+    if addonName == "CooldownManager" then
+        return C_CooldownViewer ~= nil
+    end
     return C_AddOns and C_AddOns.IsAddOnLoaded(addonName) or (IsAddOnLoaded and IsAddOnLoaded(addonName))
 end
 
@@ -107,8 +110,8 @@ function ns.GenerateImportSection(addonName, order)
                         local issues = addonModule:DetectIssues(ImportCondenser.db.global.ImportedStrings[addonName])
                         if issues and type(issues) == "string" then
                             return "|cffff0000" .. issues .. "|r"
-                        elseif issues and type(issues) == "table" and #issues > 0 then
-                            return "|cffffff00Options available|r"
+                        elseif issues and type(issues) == "table" and #issues.options and #issues.options > 0 then
+                            return issues.message and "|cffffff00" .. issues.message .. "|r" or "|cffffff00Options available|r"
                         end
                     end
                     return readyToImport and "|cff00ff00Ready to Import|r" or "|cffaaaaaa---"
@@ -126,7 +129,7 @@ function ns.GenerateImportSection(addonName, order)
                     local checkboxArgs = {}
                     if addonModule and addonModule.DetectIssues then
                         local issues = addonModule:DetectIssues(ImportCondenser.db.global.ImportedStrings and ImportCondenser.db.global.ImportedStrings[addonName] or "")
-                        if issues and type(issues) == "table" and #issues > 0 then
+                        if issues and issues.options and type(issues.options) == "table" and #issues.options > 0 then
                             local addonDb = ImportCondenser.db.global[addonName]
                             if not addonDb then
                                 ImportCondenser.db.global[addonName] = {}
@@ -138,7 +141,7 @@ function ns.GenerateImportSection(addonName, order)
                             -- Initialize selectedOptions table if it doesn't exist
                             addonDb.selectedImportOptions = addonDb.selectedImportOptions or {[playerClass:lower()] = true}
                             
-                            for i, option in ipairs(issues) do
+                            for i, option in ipairs(issues.options) do
                                 local optionName = type(option) == "table" and option.name or option
                                 local optionDesc = type(option) == "table" and option.desc or ""
                                 
@@ -373,6 +376,20 @@ function ImportCondenser:ParseImportString(importStr)
     AceConfigRegistry:NotifyChange(ADDON_NAME)
 end
 
+-- Define static popup for reload UI prompt
+StaticPopupDialogs["IMPORTCONDENSER_RELOAD_UI"] = {
+    text = "Import successful! Please reload your UI to avoid issues.",
+    button1 = "Reload",
+    button2 = "Cancel",
+    OnAccept = function()
+        ReloadUI()
+    end,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    preferredIndex = 3,
+}
+
 function ImportCondenser:Import()
     if self.db.global.ImportedStrings and type(self.db.global.ImportedStrings) == "table" then
         local profileName = self.db.global.importProfileName ~= "" and self.db.global.importProfileName or self.db.global.ImportedStrings.profileName or "ImportedProfile"
@@ -388,6 +405,7 @@ function ImportCondenser:Import()
         end
 
         print("Import successful for profile: " .. profileName)
+        StaticPopup_Show("IMPORTCONDENSER_RELOAD_UI")
     else
         print("Import failed: " .. (err or "Invalid format."))
     end
