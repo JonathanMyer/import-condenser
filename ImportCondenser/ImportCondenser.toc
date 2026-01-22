@@ -2,7 +2,7 @@
 ## Title: Import Condenser
 ## Notes: Import once for multiple different supported addons.
 ## Author: Ryepizor
-## Version: 1.6
+## Version: 1.10
 ## SavedVariables: ImportCondenserDB
 ## OptionalDeps: Ace3, LibSharedMedia-3.0
 ## X-TaintLess-DisableMitigations: CUF_PROFILE_ACTIVATE_PATCH_VERSION=1
@@ -30,7 +30,6 @@ main.lua
 addons/platynator.lua
 addons/baganator.lua
 addons/editMode.lua
-addons/nephUI.lua
 addons/plater.lua
 addons/details.lua
 addons/bartender.lua
@@ -38,3 +37,11 @@ addons/twintopInsanityBar.lua
 addons/dandersFrames.lua
 addons/unhaltedUnitFrames.lua
 addons/cooldownViewer.lua
+addons/playersCastbars.lua
+addons/tellMeWhen.lua
+addons/bigWigs.lua
+addons/midnightSimpleUnitFrames.lua
+addons/cooldownManagerCentered.lua
+addons/healthBarColor.lua
+addons/clicked.lua
+addons/clique.lua

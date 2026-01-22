@@ -17,7 +17,7 @@ end
 
 
 function ImportCondenser.UnhaltedUnitFrames:Export(table)
-    local UUFdb = _G.UnhaltedUFDB
+    local UUFdb = _G.UUFDB
     if UUFdb and UUFdb.profileKeys and charKey and type(_G.UUFG) == "table" and type(_G.UUFG.ExportUUF) == "function" then
         local profileName = UUFdb.profileKeys[charKey]
         table["UnhaltedUnitFrames"] = _G.UUFG:ExportUUF(profileName)
