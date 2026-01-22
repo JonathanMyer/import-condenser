@@ -130,6 +130,11 @@ function ns.GenerateImportSection(addonName, order)
                     if addonModule and addonModule.DetectIssues then
                         local issues = addonModule:DetectIssues(ImportCondenser.db.global.ImportedStrings and ImportCondenser.db.global.ImportedStrings[addonName] or "")
                         if issues and issues.options and type(issues.options) == "table" and #issues.options > 0 then
+                            local storeAsLower = issues.storeAsLower
+                            local defaults = issues.defaults or {}
+                            if storeAsLower == nil then
+                                storeAsLower = true
+                            end
                             local addonDb = ImportCondenser.db.global[addonName]
                             if not addonDb then
                                 ImportCondenser.db.global[addonName] = {}
@@ -139,7 +144,14 @@ function ns.GenerateImportSection(addonName, order)
                             local playerClass = select(1, UnitClass("player"))
                             
                             -- Initialize selectedOptions table if it doesn't exist
-                            addonDb.selectedImportOptions = addonDb.selectedImportOptions or {[playerClass:lower()] = true}
+                            if not addonDb.selectedImportOptions then
+                                addonDb.selectedImportOptions = {}
+                                if defaults and type(defaults) == "table" then
+                                    for _, defaultOption in ipairs(defaults) do
+                                        addonDb.selectedImportOptions[storeAsLower and defaultOption:lower() or defaultOption] = true
+                                    end
+                                end
+                            end
                             
                             for i, option in ipairs(issues.options) do
                                 local optionName = type(option) == "table" and option.name or option
@@ -150,10 +162,10 @@ function ns.GenerateImportSection(addonName, order)
                                     name = optionName,
                                     desc = optionDesc,
                                     get = function()
-                                        return addonDb.selectedImportOptions[optionName:lower()] or false
+                                        return addonDb.selectedImportOptions[storeAsLower and optionName:lower() or optionName] or false
                                     end,
                                     set = function(info, value)
-                                        addonDb.selectedImportOptions[optionName:lower()] = value
+                                        addonDb.selectedImportOptions[storeAsLower and optionName:lower() or optionName] = value
                                     end,
                                     width = .75,
                                     order = i,
