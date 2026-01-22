@@ -42,3 +42,4 @@ addons/bigWigs.lua
 addons/midnightSimpleUnitFrames.lua
 addons/cooldownManagerCentered.lua
 addons/healthBarColor.lua
+addons/clicked.lua
