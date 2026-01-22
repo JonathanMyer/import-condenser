@@ -70,7 +70,7 @@ function ImportCondenser:IsAddonLoaded(addonName)
     if addonName == "EditMode" then
         return C_EditMode ~= nil
     end
-    if addonName == "CooldownViewer" then
+    if addonName == "CooldownManager" then
         return C_CooldownViewer ~= nil
     end
     return C_AddOns and C_AddOns.IsAddOnLoaded(addonName) or (IsAddOnLoaded and IsAddOnLoaded(addonName))
