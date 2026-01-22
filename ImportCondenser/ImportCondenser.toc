@@ -45,3 +45,4 @@ addons/cooldownManagerCentered.lua
 addons/healthBarColor.lua
 addons/clicked.lua
 addons/clique.lua
+addons/senseiClassResourceBar.lua
