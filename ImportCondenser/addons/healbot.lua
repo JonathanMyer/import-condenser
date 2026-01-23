@@ -72,15 +72,15 @@ function ImportCondenser.Healbot:Import(importString)
     local HBAux = _G.Healbot_Config_Aux
     local HBGlobals = _G.HealBot_Globals
     local HBSpells = _G.HealBot_Config_Spells
+    local HBCProfile = _G.HealBot_Config
+
 
     if not HBSkins or not HBAux then return end
 
     local profileList = {}
     if type(importString) == "table" then
         profileList = importString
-        ImportCondenser:AddToInspector(ImportCondenser.db.global.Healbot.selectedImportOptions, "Healbot Import Options")
         for profileName, v in pairs(profileList) do
-            print("importing healbot profile: "..profileName)
             local profile = ImportCondenser:DeSeriPressCode(v)
             if ImportCondenser.db.global.Healbot.selectedImportOptions[profileName] == true then
                 
@@ -257,6 +257,14 @@ function ImportCondenser.Healbot:Import(importString)
                             end
                         end
                     end
+
+                    -- SkinDefault
+                    if profile.SkinDefault and HBCProfile then
+                         if not HBCProfile.SkinDefault then HBCProfile.SkinDefault = {} end
+                         HBCProfile.SkinDefault[profileName] = {}
+                         ImportCondenser:CopyTable(profile.SkinDefault, HBCProfile.SkinDefault[profileName])
+                    end
+
                 end -- End Skin Import
             end
         end
@@ -269,6 +277,7 @@ function ImportCondenser.Healbot:Export(table)
     local HBAux = _G.Healbot_Config_Aux
     local HBGlobals = _G.HealBot_Globals
     local HBSpells = _G.HealBot_Config_Spells
+    local HBCProfile = _G.HealBot_Config
 
     if HBSkins and HBSkins.Skins then
         local profileList = {}
@@ -422,6 +431,12 @@ function ImportCondenser.Healbot:Export(table)
                              profileList[pName][varName] = {}
                              ImportCondenser:CopyTable(globalTable[pName], profileList[pName][varName])
                          end
+                    end
+                    
+                    -- SkinDefault
+                    if HBCProfile and HBCProfile.SkinDefault and HBCProfile.SkinDefault[pName] then
+                        profileList[pName].SkinDefault = {}
+                        ImportCondenser:CopyTable(HBCProfile.SkinDefault[pName], profileList[pName].SkinDefault)
                     end
                 end
 
