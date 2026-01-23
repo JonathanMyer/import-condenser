@@ -215,6 +215,8 @@ function ns.GenerateExportSection(addonName, order)
             end
 
             -- Initialize selectedOptions table if it doesn't exist
+            -- uncoment the next line to test.
+            -- addonDb.selectedExportOptions = nil
             if not addonDb.selectedExportOptions then
                 addonDb.selectedExportOptions = {}
                 if defaults and type(defaults) == "table" then
@@ -388,8 +390,15 @@ function ns.SetupOptions(self)
     end
 end
 
+local importPrefix = "1:ImportCondenser:"
+
 function ImportCondenser:ParseImportString(importStr)
-    self.db.global.ImportedStrings = C_EncodingUtil.DeserializeJSON(importStr)
+    if importStr:sub(1, #importPrefix) == importPrefix then
+        importStr = importStr:sub(#importPrefix + 1)
+        self.db.global.ImportedStrings = ImportCondenser:DeSeriPressCode(importStr)
+    else
+        self.db.global.ImportedStrings = C_EncodingUtil.DeserializeJSON(importStr)
+    end
     -- Rebuild options table to regenerate import sections
     ns.SetupOptions(self)
     -- Refresh the UI to show updated parse status
@@ -441,7 +450,7 @@ function ImportCondenser:GenerateExportString()
             addonModule:Export(exports)
         end
     end
-    return C_EncodingUtil.SerializeJSON(exports)
+    return importPrefix .. ImportCondenser:SeriPressCode(exports)
 end
 
 function ImportCondenser:DisplayTextFrame(title, text)
