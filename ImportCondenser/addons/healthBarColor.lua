@@ -4,6 +4,10 @@ local AceAddon = LibStub("AceAddon-3.0", true)
 
 ImportCondenser.HealthBarColor = {}
 
+function ImportCondenser.HealthBarColor:GetExportOptions()
+    return {"Export"}, {"Export"}, false
+end
+
 function ImportCondenser.HealthBarColor:Import(importStr, profileName)
     local TMW = AceAddon and AceAddon:GetAddon("HealthBarColor", true)
     if not TMW then
@@ -18,6 +22,7 @@ function ImportCondenser.HealthBarColor:Import(importStr, profileName)
 end
 
 function ImportCondenser.HealthBarColor:Export(exports)
+    if ImportCondenser.db.global.HealthBarColor.selectedExportOptions["Export"] ~= true then return end
     local HBC = AceAddon and AceAddon:GetAddon("HealthBarColor", true)
     if HBC and HBC.db and HBC.db.profile then
         local profile = HBC.db.profile

@@ -3,6 +3,10 @@ local ImportCondenser = ns.Addon
 
 ImportCondenser.EditMode = {}
 
+function ImportCondenser.EditMode:GetExportOptions()
+    return {"Export"}, {"Export"}, false
+end
+
 function ImportCondenser.EditMode:DetectIssues(importString)
     local layouts = C_EditMode and C_EditMode.GetLayouts and C_EditMode.GetLayouts()
     if layouts and layouts.layouts and ImportCondenser:CountKeys(layouts.layouts) >= 5 then
@@ -45,6 +49,7 @@ function ImportCondenser.EditMode:Import(importString, profileName)
 end
 
 function ImportCondenser.EditMode:Export(exports)
+    if ImportCondenser.db.global.EditMode.selectedExportOptions["Export"] ~= true then return end
     if C_EditMode and type(C_EditMode.GetLayouts) == "function" and type(C_EditMode.ConvertLayoutInfoToString) == "function" then
         local layouts = C_EditMode.GetLayouts()
         local layoutNumber = layouts and layouts.activeLayout

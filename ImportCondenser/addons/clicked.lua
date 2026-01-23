@@ -7,6 +7,10 @@ local realmKey = GetRealmName()
 local charKey = UnitName("player") .. " - " .. realmKey
 local class = UnitClassBase("player")
 
+function ImportCondenser.Clicked:GetExportOptions()
+    return {"Export"}, {"Export"}, false
+end
+
 function ImportCondenser.Clicked:Import(importString, profileName)
     local C = _G.Clicked
     local CDB = _G.ClickedDB
@@ -28,6 +32,9 @@ function ImportCondenser.Clicked:Import(importString, profileName)
 end
 
 function ImportCondenser.Clicked:Export(table)
+    if ImportCondenser.db.global.Clicked.selectedExportOptions["Export"] ~= true then
+        return
+    end
     local C = _G.Clicked
     local CDB = _G.ClickedDB
     if C and

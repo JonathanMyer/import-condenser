@@ -9,6 +9,10 @@ local LibDeflate = LibStub("LibDeflate", true)
 
 ImportCondenser.Bartender4 = {}
 
+function ImportCondenser.Bartender4:GetExportOptions()
+    return {"Export"}, {"Export"}, false
+end
+
 function ImportCondenser.Bartender4:Import(importStr, profileName)
     local Bartender4 = AceAddon and AceAddon:GetAddon("Bartender4", true)
 	if not Bartender4 then
@@ -61,6 +65,9 @@ function ImportCondenser.Bartender4:Import(importStr, profileName)
 end
 
 function ImportCondenser.Bartender4:Export(exports)
+    if ImportCondenser.db.global.Bartender4.selectedExportOptions["Export"] ~= true then
+        return
+    end
     local Bartender = AceAddon and AceAddon:GetAddon("Bartender4", true)
 	if not Bartender then
 		return

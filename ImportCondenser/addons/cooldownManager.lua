@@ -4,7 +4,7 @@ local ImportCondenser = ns.Addon
 ImportCondenser.CooldownManager = {}
 
 function ImportCondenser.CooldownManager:GetExportOptions()
-    return {"Export"}, {}, true
+    return {"Export"}, {}, false
 end
 
 function ImportCondenser.CooldownManager:DetectIssues(importString)
@@ -24,8 +24,9 @@ function ImportCondenser.CooldownManager:Import(importString, profileName)
 end
 
 function ImportCondenser.CooldownManager:Export(exports)
+    if ImportCondenser.db.global.CooldownManager.selectedExportOptions["Export"] ~= true then return end
     local layout = C_CooldownViewer.GetLayoutData()
-    if layout and ImportCondenser.db.global.CooldownManager.selectedExportOptions["export"] then
+    if layout then
         exports["CooldownManager"] = layout
     end
 end

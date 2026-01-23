@@ -5,6 +5,10 @@ ImportCondenser.UnhaltedUnitFrames = {}
 local realmKey = GetRealmName()
 local charKey = UnitName("player") .. " - " .. realmKey
 
+function ImportCondenser.UnhaltedUnitFrames:GetExportOptions()
+    return {"Export"}, {"Export"}, false
+end
+
 function ImportCondenser.UnhaltedUnitFrames:Import(importString, profileName)
     local UUFdb = _G.UnhaltedUFDB 
     if type(_G.UUFG) == "table" and type(_G.UUFG.ImportUUF) == "function" then
@@ -18,6 +22,9 @@ end
 
 function ImportCondenser.UnhaltedUnitFrames:Export(table)
     local UUFdb = _G.UUFDB
+    if ImportCondenser.db.global.UnhaltedUnitFrames.selectedExportOptions["Export"] ~= true then
+        return
+    end
     if UUFdb and UUFdb.profileKeys and charKey and type(_G.UUFG) == "table" and type(_G.UUFG.ExportUUF) == "function" then
         local profileName = UUFdb.profileKeys[charKey]
         table["UnhaltedUnitFrames"] = _G.UUFG:ExportUUF(profileName)

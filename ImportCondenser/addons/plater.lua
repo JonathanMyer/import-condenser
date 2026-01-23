@@ -8,6 +8,10 @@ ImportCondenser.Plater = {}
 local DB_CAPTURED_SPELLS = {}
 local DB_CAPTURED_CASTS = {}
 
+function ImportCondenser.Plater:GetExportOptions()
+    return {"Export"}, {"Export"}, false
+end
+
 function ImportCondenser.Plater:Import(importStr, profileName)
     if Plater and type(Plater) == "table" and type(Plater.ImportAndSwitchProfile) == "function" then
         Plater.ImportAndSwitchProfile(profileName, importStr, false, false, true)
@@ -15,6 +19,7 @@ function ImportCondenser.Plater:Import(importStr, profileName)
 end
 
 function ImportCondenser.Plater:Export(exports)
+    if ImportCondenser.db.global.Plater.selectedExportOptions["Export"] ~= true then return end
     local Plater = AceAddon and AceAddon:GetAddon("Plater", true)
     local DF = LibStub("DetailsFramework-1.0", true)
     if not Plater or not DF then

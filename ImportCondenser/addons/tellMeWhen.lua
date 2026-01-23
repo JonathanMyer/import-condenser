@@ -5,6 +5,10 @@ local LibDualSpec   = LibStub("LibDualSpec-1.0", true)
 
 ImportCondenser.TellMeWhen = {}
 
+function ImportCondenser.TellMeWhen:GetExportOptions()
+    return {"Export"}, {"Export"}, false
+end
+
 function ImportCondenser.TellMeWhen:Import(importStr, profileName)
     local TMW = AceAddon and AceAddon:GetAddon("TellMeWhen", true)
     if not TMW then
@@ -20,6 +24,7 @@ function ImportCondenser.TellMeWhen:Import(importStr, profileName)
 end
 
 function ImportCondenser.TellMeWhen:Export(exports)
+    if ImportCondenser.db.global.TellMeWhen.selectedExportOptions["Export"] ~= true then return end
     local TMW = AceAddon and AceAddon:GetAddon("TellMeWhen", true)
     if TMW and TMW.db and TMW.db.profile then
         local profile = TMW.db.profile

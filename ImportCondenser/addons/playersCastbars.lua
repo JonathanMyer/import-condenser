@@ -4,6 +4,10 @@ local AceAddon = LibStub("AceAddon-3.0", true)
 
 ImportCondenser.PlayersCastbars = {}
 
+function ImportCondenser.PlayersCastbars:GetExportOptions()
+    return {"Export"}, {"Export"}, false
+end
+
 function ImportCondenser.PlayersCastbars:Import(importStr, profileName)
     local allProfs = ImportCondenser:DeSeriPressCode(importStr)
     local PlayersCastbars = AceAddon and AceAddon:GetAddon("PlayersCastbars", true)
@@ -27,6 +31,7 @@ function ImportCondenser.PlayersCastbars:Import(importStr, profileName)
 end
 
 function ImportCondenser.PlayersCastbars:Export(exports)
+    if ImportCondenser.db.global.PlayersCastbars.selectedExportOptions["Export"] ~= true then return end
     local PlayersCastbars = AceAddon and AceAddon:GetAddon("PlayersCastbars", true)
     if not PlayersCastbars then
         return
