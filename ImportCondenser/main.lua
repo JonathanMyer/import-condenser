@@ -262,6 +262,7 @@ function ns.SetupOptions(self)
                 type = "group",
                 name = "Import",
                 desc = "Import addon profiles",
+                childGroups = "tab",
                 order = 1,
                 args = {
                     header = {
@@ -271,21 +272,20 @@ function ns.SetupOptions(self)
                     },
                     importProfileName = {
                         type = "input",
-                        name = "Import Profile Name Override",
-                        desc = "Enter a name for the imported profile.",
+                        name = "Profile Name Override",
+                        desc = "Enter a name for the imported profile. If empty, it will use the name that was in the export. Some addons do not support new profile names.",
                         get = function(info)
                             return self.db.global.importProfileName or nil
                         end,
                         set = function(info, value)
                             self.db.global.importProfileName = value
                         end,
-                        order = 0.5,
+                        order =1,
                     },
                     importProfile = {
                         type = "input",
-                        name = "Import Profiles",
+                        name = "Input String",
                         desc = "Paste a profile string here to import. Only strings exported from this addon are supported.",
-                        multiline = true,
                         width = "full",
                         get = function()
                             return tempImportText
@@ -294,13 +294,13 @@ function ns.SetupOptions(self)
                             tempImportText = value
                             ImportCondenser:ParseImportString(value)
                         end,
-                        order = 1,
+                        order = .25,
                     },
                     Import = {
                         type = "execute",
                         name = "Import",
                         desc = "Import the pasted profile string.",
-                        width = "half",
+                        width = .5,
                         func = function()
                             ImportCondenser:Import()
                         end,
@@ -310,7 +310,7 @@ function ns.SetupOptions(self)
                         type = "execute",
                         name = "Reload UI",
                         desc = "Reload the user interface to apply changes.",
-                        width = "half",
+                        width = .5,
                         func = function()
                             ReloadUI()
                         end,
@@ -319,7 +319,6 @@ function ns.SetupOptions(self)
                     addonGroup = {
                         type = "group",
                         name = "Addons                     Status              Parse Status",
-                        inline = true,
                         order = 3,
                         args = (function()
                             local args = {}
@@ -336,6 +335,7 @@ function ns.SetupOptions(self)
                 name = "Export",
                 desc = "Export your addon profiles",
                 order = 2,
+                childGroups = "tab",
                 args = {
                     header = {
                         type = "header",
@@ -366,7 +366,6 @@ function ns.SetupOptions(self)
                     addonGroup = {
                         type = "group",
                         name = "Export Options",
-                        inline = true,
                         order = 3,
                         args = (function()
                             local args = {}
