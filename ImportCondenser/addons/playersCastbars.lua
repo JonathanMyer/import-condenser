@@ -7,8 +7,16 @@ ImportCondenser.PlayersCastbars = {}
 function ImportCondenser.PlayersCastbars:Import(importStr, profileName)
     local allProfs = ImportCondenser:DeSeriPressCode(importStr)
     local PlayersCastbars = AceAddon and AceAddon:GetAddon("PlayersCastbars", true)
-    if PlayersCastbars and PlayersCastbars.db and PlayersCastbars.db.profile and allProfs and allProfs.profile then
-        PlayersCastbars.db.profile = allProfs.profile or PlayersCastbars.db.profile
+    if PlayersCastbars and 
+        PlayersCastbars.db and
+        PlayersCastbars.db.profile and 
+        PlayersCastbars.db.SetProfile and 
+        type(PlayersCastbars.db.SetProfile) == "function" and 
+        allProfs and 
+        allProfs.profile 
+    then
+        PlayersCastbars.db:SetProfile(profileName)
+        PlayersCastbars.db.profiles[profileName] = allProfs.profile or PlayersCastbars.db.profile
     end
     if _G.TarSaves and allProfs and allProfs.target then
         _G.TarSaves = allProfs.target or _G.TarSaves
