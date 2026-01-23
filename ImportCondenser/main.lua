@@ -28,17 +28,29 @@ function ImportCondenser:GetAddonModules()
                 table.insert(addons, key)
             end
         end
-        -- Sort with DetectIssues addons first, then alphabetically
-        table.sort(addons, function(a, b)
+    end
+
+    -- Sort loaded addons first; among loaded, DetectIssues addons first; then alphabetically
+    table.sort(addons, function(a, b)
+        local aLoaded = ImportCondenser:IsAddonLoaded(a)
+        local bLoaded = ImportCondenser:IsAddonLoaded(b)
+
+        if aLoaded ~= bLoaded then
+            return aLoaded
+        end
+
+        if aLoaded then
             local aHasDetect = ImportCondenser[a] and ImportCondenser[a].DetectIssues ~= nil
             local bHasDetect = ImportCondenser[b] and ImportCondenser[b].DetectIssues ~= nil
-            
+
             if aHasDetect ~= bHasDetect then
-                return aHasDetect -- a comes first if it has DetectIssues
+                return aHasDetect
             end
-            return a < b -- Otherwise sort alphabetically
-        end)
-    end
+        end
+
+        return a < b
+    end)
+
     return addons
 end
 
@@ -63,6 +75,10 @@ end
 
 
 function ImportCondenser:OpenConfig()
+    -- Rebuild options so addon ordering reflects current loaded state
+    self:GetAddonModules()
+    ns.SetupOptions(self)
+    AceConfigRegistry:NotifyChange(ADDON_NAME)
     AceConfigDialog:Open(ADDON_NAME)
 end
 
