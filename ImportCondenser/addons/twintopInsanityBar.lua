@@ -17,7 +17,8 @@ end
 
 
 function ImportCondenser.TwintopInsanityBar:DetectIssues(importString)
-   if _G.Twintop_Data and _G.Twintop_Data.settings then
+   if importString and #importString > 0 and _G.Twintop_Data and _G.Twintop_Data.settings then
+
         local asTable = ImportCondenser:DeSeriPressCode(importString)
         local returnList = {}
         for k, v in pairs(asTable) do
@@ -29,7 +30,6 @@ end
 
 function ImportCondenser.TwintopInsanityBar:Import(importString)
     if _G.Twintop_Data and _G.Twintop_Data.settings then
-        ImportCondenser:AddToInspector(ImportCondenser.db.global.TwintopInsanityBar.selectedImportOptions, "Twintop selected import options")
         local asTable = ImportCondenser:DeSeriPressCode(importString)
         for k, v in pairs(asTable) do
             if ImportCondenser.db.global.TwintopInsanityBar.selectedImportOptions[k] == true then
