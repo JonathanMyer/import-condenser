@@ -23,7 +23,8 @@ function ImportCondenser.TwintopInsanityBar:GetExportOptions()
         [6] = "Audio and Tracking",
         [7] = "Bar Text",
     }
-    return args, {[1] = UnitClass("player")}, false
+    local _, _, classId = UnitClass("player")
+    return args, {["Classes"] = classId, "Core", "Bar Display", "Thresholds", "Font and Text", "Audio and Tracking", "Bar Text"}, false
 end
 
 

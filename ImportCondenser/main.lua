@@ -240,8 +240,14 @@ function ns.GenerateExportSection(addonName, order)
             if not addonDb.selectedExportOptions then
                 addonDb.selectedExportOptions = {}
                 if defaults and type(defaults) == "table" then
-                    for _, defaultOption in ipairs(defaults) do
-                        addonDb.selectedExportOptions[storeAsLower and defaultOption:lower() or defaultOption] = true
+                    for key, defaultOption in pairs(defaults) do
+                        if type(key) == "number" then
+                            -- checkbox
+                            addonDb.selectedExportOptions[storeAsLower and defaultOption:lower() or defaultOption] = true
+                        else
+                            -- dropdown
+                            addonDb.selectedExportOptions[key] = storeAsLower and defaultOption:lower() or defaultOption
+                        end
                     end
                 end
             end
