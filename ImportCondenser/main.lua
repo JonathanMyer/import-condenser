@@ -143,8 +143,12 @@ function ns.GenerateImportSection(addonName, order)
                 args = (function()
                     local addonModule = ImportCondenser[addonName]
                     local checkboxArgs = {}
-                    if addonModule and addonModule.DetectIssues then
-                        local issues = addonModule:DetectIssues(ImportCondenser.db.global.ImportedStrings and ImportCondenser.db.global.ImportedStrings[addonName] or "")
+                    if addonModule and
+                        addonModule.DetectIssues and
+                        ImportCondenser.db.global.ImportedStrings and
+                        ImportCondenser.db.global.ImportedStrings[addonName]
+                    then
+                        local issues = addonModule:DetectIssues(ImportCondenser.db.global.ImportedStrings[addonName])
                         if issues and issues.options and type(issues.options) == "table" and #issues.options > 0 then
                             local storeAsLower = issues.storeAsLower
                             local defaults = issues.defaults or {}

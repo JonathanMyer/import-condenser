@@ -17,7 +17,7 @@ end
 
 
 function ImportCondenser.TwintopInsanityBar:DetectIssues(importString)
-   if importString and #importString > 0 and _G.Twintop_Data and _G.Twintop_Data.settings then
+   if _G.Twintop_Data and _G.Twintop_Data.settings then
 
         local asTable = ImportCondenser:DeSeriPressCode(importString)
         local returnList = {}
