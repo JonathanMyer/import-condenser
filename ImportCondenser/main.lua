@@ -240,8 +240,14 @@ function ns.GenerateExportSection(addonName, order)
             if not addonDb.selectedExportOptions then
                 addonDb.selectedExportOptions = {}
                 if defaults and type(defaults) == "table" then
-                    for _, defaultOption in ipairs(defaults) do
-                        addonDb.selectedExportOptions[storeAsLower and defaultOption:lower() or defaultOption] = true
+                    for key, defaultOption in pairs(defaults) do
+                        if type(key) == "number" then
+                            -- checkbox
+                            addonDb.selectedExportOptions[storeAsLower and defaultOption:lower() or defaultOption] = true
+                        else
+                            -- dropdown
+                            addonDb.selectedExportOptions[key] = storeAsLower and defaultOption:lower() or defaultOption
+                        end
                     end
                 end
             end
@@ -250,20 +256,40 @@ function ns.GenerateExportSection(addonName, order)
             for i, option in ipairs(options) do
                 local optionName = type(option) == "table" and option.name or option
                 local optionDesc = type(option) == "table" and option.desc or ""
+                if type(option) == "table" then
+                    checkboxArgs["option" .. i] = {
+                        type = "select",
+                        style = "dropdown",
+                        name = optionName,
+                        desc = optionDesc,
+                        values = option.values,
+                        get = function()
+                            return addonDb.selectedExportOptions[storeAsLower and optionName:lower() or optionName] or 0
+                        end,
+                        set = function(info, value)
+                            addonDb.selectedExportOptions[storeAsLower and optionName:lower() or optionName] = value
+                        end,
+                        width = .75,
+                        order = i,
+                    }
+                    
+                else
+                    checkboxArgs["option" .. i] = {
+                        type = "toggle",
+                        name = optionName,
+                        desc = optionDesc,
+                        get = function()
+                            return addonDb.selectedExportOptions[storeAsLower and optionName:lower() or optionName] or false
+                        end,
+                        set = function(info, value)
+                            addonDb.selectedExportOptions[storeAsLower and optionName:lower() or optionName] = value
+                        end,
+                        width = .75,
+                        order = i,
+                    }
+
+                end
                 
-                checkboxArgs["option" .. i] = {
-                    type = "toggle",
-                    name = optionName,
-                    desc = optionDesc,
-                    get = function()
-                        return addonDb.selectedExportOptions[storeAsLower and optionName:lower() or optionName] or false
-                    end,
-                    set = function(info, value)
-                        addonDb.selectedExportOptions[storeAsLower and optionName:lower() or optionName] = value
-                    end,
-                    width = .75,
-                    order = i,
-                }
             end
             return checkboxArgs
         end)(),
