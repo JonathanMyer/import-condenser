@@ -279,61 +279,96 @@ function ns.GenerateImportSection(addonName, order)
 end
 
 function ns.GenerateExportSection(addonName, order)
+    local addonModule = ImportCondenser[addonName]
+
+    local function canShowExport()
+        return addonModule and addonModule.GetExportOptions and ImportCondenser:IsAddonLoaded(addonName)
+    end
+
+    local function getAddonDb()
+        if not (ImportCondenser.db and ImportCondenser.db.global) then
+            return nil
+        end
+        local addonDb = ImportCondenser.db.global[addonName]
+        if not addonDb then
+            addonDb = {}
+            ImportCondenser.db.global[addonName] = addonDb
+        end
+        return addonDb
+    end
+
+    local function normalizeKey(key, storeAsLower)
+        return storeAsLower and key:lower() or key
+    end
+
+    local function getExportOptions()
+        if not (addonModule and addonModule.GetExportOptions) then
+            return nil
+        end
+
+        local options, defaults, storeAsLower = addonModule:GetExportOptions()
+        if storeAsLower == nil then
+            storeAsLower = true
+        end
+        if not options or type(options) ~= "table" then
+            return nil
+        end
+
+        return options, defaults, storeAsLower
+    end
+
+    local function ensureSelectedExportOptions(addonDb, defaults, storeAsLower)
+        if addonDb.selectedExportOptions then
+            return
+        end
+
+        addonDb.selectedExportOptions = {}
+        if defaults and type(defaults) == "table" then
+            for key, defaultOption in pairs(defaults) do
+                if type(key) == "number" then
+                    -- checkbox
+                    addonDb.selectedExportOptions[normalizeKey(defaultOption, storeAsLower)] = true
+                else
+                    -- dropdown
+                    addonDb.selectedExportOptions[key] = normalizeKey(defaultOption, storeAsLower)
+                end
+            end
+        end
+    end
+
     return {
         type = "group",
         name = addonName,
         hidden = function()
-            local addonModule = ImportCondenser[addonName]
-            if addonModule and addonModule.GetExportOptions then
-                return not ImportCondenser:IsAddonLoaded(addonName)
-            end
-            return true
+            return not canShowExport()
         end,
         inline = true,
         order = order,
         args = (function()
-            local addonModule = ImportCondenser[addonName]
-            local addonDb = ImportCondenser.db.global[addonName]
-            if not addonModule or not addonModule.GetExportOptions then
+            if not (addonModule and addonModule.GetExportOptions) then
                 return {}
             end
-            
-            -- Initialize addon namespace if it doesn't exist
+
+            local addonDb = getAddonDb()
             if not addonDb then
-                ImportCondenser.db.global[addonName] = {}
-                addonDb = ImportCondenser.db.global[addonName]
+                return {}
             end
-            
-            local options, defaults, storeAsLower = addonModule:GetExportOptions()
-            if storeAsLower == nil then
-                storeAsLower = true
-            end
-            if not options or type(options) ~= "table" then
+
+            local options, defaults, storeAsLower = getExportOptions()
+            if not options then
                 return {}
             end
 
             -- Initialize selectedOptions table if it doesn't exist
             -- uncoment the next line to test.
             -- addonDb.selectedExportOptions = nil
-            if not addonDb.selectedExportOptions then
-                addonDb.selectedExportOptions = {}
-                if defaults and type(defaults) == "table" then
-                    for key, defaultOption in pairs(defaults) do
-                        if type(key) == "number" then
-                            -- checkbox
-                            addonDb.selectedExportOptions[storeAsLower and defaultOption:lower() or defaultOption] = true
-                        else
-                            -- dropdown
-                            addonDb.selectedExportOptions[key] = storeAsLower and defaultOption:lower() or defaultOption
-                        end
-                    end
-                end
-            end
+            ensureSelectedExportOptions(addonDb, defaults, storeAsLower)
             
             local checkboxArgs = {}
             for i, option in ipairs(options) do
                 local optionName = type(option) == "table" and option.name or option
                 local optionDesc = type(option) == "table" and option.desc or ""
+                local normalizedKey = normalizeKey(optionName, storeAsLower)
                 if type(option) == "table" then
                     checkboxArgs["option" .. i] = {
                         type = "select",
@@ -342,10 +377,10 @@ function ns.GenerateExportSection(addonName, order)
                         desc = optionDesc,
                         values = option.values,
                         get = function()
-                            return addonDb.selectedExportOptions[storeAsLower and optionName:lower() or optionName] or 0
+                            return addonDb.selectedExportOptions[normalizedKey] or 0
                         end,
                         set = function(info, value)
-                            addonDb.selectedExportOptions[storeAsLower and optionName:lower() or optionName] = value
+                            addonDb.selectedExportOptions[normalizedKey] = value
                         end,
                         width = .75,
                         order = i,
@@ -357,10 +392,10 @@ function ns.GenerateExportSection(addonName, order)
                         name = optionName,
                         desc = optionDesc,
                         get = function()
-                            return addonDb.selectedExportOptions[storeAsLower and optionName:lower() or optionName] or false
+                            return addonDb.selectedExportOptions[normalizedKey] or false
                         end,
                         set = function(info, value)
-                            addonDb.selectedExportOptions[storeAsLower and optionName:lower() or optionName] = value
+                            addonDb.selectedExportOptions[normalizedKey] = value
                         end,
                         width = .75,
                         order = i,
