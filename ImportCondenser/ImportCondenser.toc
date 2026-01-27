@@ -55,3 +55,4 @@ addons/clique.lua
 addons/healbot.lua
 addons/senseiClassResourceBar.lua
 addons/betterCooldownManager.lua
+addons/grid2.lua
