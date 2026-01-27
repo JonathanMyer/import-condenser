@@ -11,7 +11,6 @@ function ImportCondenser.CooldownManager:DetectIssues(importString)
     if importString and importString ~= "" then
         return {
             message = "Warning: Importing will overwrite all of your Cooldown Manager layouts for this Character.",
-            options = {"Import"},
         }
     end
     return nil

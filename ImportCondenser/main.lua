@@ -93,12 +93,78 @@ function ImportCondenser:IsAddonLoaded(addonName)
 end
 
 function ns.GenerateImportSection(addonName, order)
+    local addonModule = ImportCondenser[addonName]
+
+    local function getImportedAddonString()
+        return ImportCondenser.db and
+            ImportCondenser.db.global and
+            ImportCondenser.db.global.ImportedStrings and
+            ImportCondenser.db.global.ImportedStrings[addonName]
+    end
+
+    local function getAddonDb()
+        if not (ImportCondenser.db and ImportCondenser.db.global) then
+            return nil
+        end
+        local addonDb = ImportCondenser.db.global[addonName]
+        if not addonDb then
+            addonDb = {}
+            ImportCondenser.db.global[addonName] = addonDb
+        end
+        return addonDb
+    end
+
+    local function getIssues()
+        local imported = getImportedAddonString()
+        if addonModule and addonModule.DetectIssues and imported then
+            return addonModule:DetectIssues(imported)
+        end
+        return nil
+    end
+
+    local function ensureSelectedImportOptions(issues)
+        if not (issues and type(issues) == "table") then
+            return
+        end
+        if not (issues.options and type(issues.options) == "table" and #issues.options > 0) then
+            return
+        end
+
+        local addonDb = getAddonDb()
+        if not addonDb then
+            return
+        end
+
+        local storeAsLower = issues.storeAsLower
+        if storeAsLower == nil then
+            storeAsLower = true
+        end
+
+        if addonDb.selectedImportOptions then
+            return
+        end
+
+        addonDb.selectedImportOptions = {}
+        local defaults = issues.defaults or {}
+        if defaults and type(defaults) == "table" then
+            for _, defaultOption in ipairs(defaults) do
+                addonDb.selectedImportOptions[storeAsLower and defaultOption:lower() or defaultOption] = true
+            end
+        end
+    end
+
+    local imported = getImportedAddonString()
+    local readyToImport = ImportCondenser:IsAddonLoaded(addonName) and
+        imported ~= nil and
+        addonModule ~= nil
+
     return {
         type = "group",
         name = "",
         inline = true,
         order = order,
-        args = {
+        args = (function ()
+            return {
             addon = {
                 type = "description",
                 name = addonName,
@@ -116,17 +182,11 @@ function ns.GenerateImportSection(addonName, order)
             parsed = {
                 type = "description",
                 name = function()
-                    local addonModule = ImportCondenser[addonName]
-                    local readyToImport = ImportCondenser:IsAddonLoaded(addonName) and
-                        ImportCondenser.db and
-                        ImportCondenser.db.global.ImportedStrings and
-                        ImportCondenser.db.global.ImportedStrings[addonName] ~= nil and
-                        addonModule ~= nil
                     if readyToImport and addonModule and addonModule.DetectIssues then
-                        local issues = addonModule:DetectIssues(ImportCondenser.db.global.ImportedStrings[addonName])
+                        local issues = getIssues()
                         if issues and type(issues) == "string" then
                             return "|cffff0000" .. issues .. "|r"
-                        elseif issues and type(issues) == "table" and #issues.options and #issues.options > 0 then
+                        elseif issues and type(issues) == "table" and issues.message then
                             return issues.message and "|cffffff00" .. issues.message .. "|r" or "|cffffff00Options available|r"
                         end
                     end
@@ -135,68 +195,74 @@ function ns.GenerateImportSection(addonName, order)
                 width = "fill",
                 order = 3,
             },
+            shouldImport = {
+                type = "toggle",
+                name = "Import?",
+                desc = "Do you want to import settings for " .. addonName .. "?",
+                get = function()
+                    local addonDb = getAddonDb()
+                    if not addonDb then
+                        return false
+                    end
+                    if addonDb.shouldImport == nil then
+                        addonDb.shouldImport = true
+                    end
+                    return addonDb.shouldImport
+                end,
+                set = function(info, value)
+                    local addonDb = getAddonDb()
+                    if not addonDb then
+                        return
+                    end
+                    addonDb.shouldImport = value
+                end,
+                width = .75,
+                order = 3.5,
+            },
             options = {
                 type = "group",
                 name = "",
                 inline = true,
                 order = 4,
                 args = (function()
-                    local addonModule = ImportCondenser[addonName]
                     local checkboxArgs = {}
-                    if addonModule and
-                        addonModule.DetectIssues and
-                        ImportCondenser.db.global.ImportedStrings and
-                        ImportCondenser.db.global.ImportedStrings[addonName]
-                    then
-                        local issues = addonModule:DetectIssues(ImportCondenser.db.global.ImportedStrings[addonName])
-                        if issues and issues.options and type(issues.options) == "table" and #issues.options > 0 then
-                            local storeAsLower = issues.storeAsLower
-                            local defaults = issues.defaults or {}
-                            if storeAsLower == nil then
-                                storeAsLower = true
-                            end
-                            local addonDb = ImportCondenser.db.global[addonName]
-                            if not addonDb then
-                                ImportCondenser.db.global[addonName] = {}
-                                addonDb = ImportCondenser.db.global[addonName]
-                            end
+                    local issues = getIssues()
+                    if issues and issues.options and type(issues.options) == "table" and #issues.options > 0 then
+                        ensureSelectedImportOptions(issues)
 
-                            local playerClass = select(1, UnitClass("player"))
-                            
-                            -- Initialize selectedOptions table if it doesn't exist
-                            if not addonDb.selectedImportOptions then
-                                addonDb.selectedImportOptions = {}
-                                if defaults and type(defaults) == "table" then
-                                    for _, defaultOption in ipairs(defaults) do
-                                        addonDb.selectedImportOptions[storeAsLower and defaultOption:lower() or defaultOption] = true
-                                    end
-                                end
-                            end
-                            
-                            for i, option in ipairs(issues.options) do
-                                local optionName = type(option) == "table" and option.name or option
-                                local optionDesc = type(option) == "table" and option.desc or ""
-                                
-                                checkboxArgs["option" .. i] = {
-                                    type = "toggle",
-                                    name = optionName,
-                                    desc = optionDesc,
-                                    get = function()
-                                        return addonDb.selectedImportOptions[storeAsLower and optionName:lower() or optionName] or false
-                                    end,
-                                    set = function(info, value)
-                                        addonDb.selectedImportOptions[storeAsLower and optionName:lower() or optionName] = value
-                                    end,
-                                    width = .75,
-                                    order = i,
-                                }
-                            end
+                        local storeAsLower = issues.storeAsLower
+                        if storeAsLower == nil then
+                            storeAsLower = true
+                        end
+                        local addonDb = getAddonDb()
+                        if not addonDb then
+                            return checkboxArgs
+                        end
+
+                        for i, option in ipairs(issues.options) do
+                            local optionName = type(option) == "table" and option.name or option
+                            local optionDesc = type(option) == "table" and option.desc or ""
+
+                            checkboxArgs["option" .. i] = {
+                                type = "toggle",
+                                name = optionName,
+                                desc = optionDesc,
+                                get = function()
+                                    return addonDb.selectedImportOptions[storeAsLower and optionName:lower() or optionName] or false
+                                end,
+                                set = function(info, value)
+                                    addonDb.selectedImportOptions[storeAsLower and optionName:lower() or optionName] = value
+                                end,
+                                width = .75,
+                                order = i,
+                            }
                         end
                     end
                     return checkboxArgs
                 end)(),
             },
-        },
+        }
+        end)(),
     }
 end
 
@@ -472,7 +538,9 @@ function ImportCondenser:Import()
         for _, addonName in ipairs(addons) do
             if self.db.global.ImportedStrings[addonName] then
                 local addonModule = ImportCondenser[addonName]
-                if addonModule and addonModule.Import then
+                local addonDb = ImportCondenser.db.global[addonName]
+                if addonModule and addonModule.Import and addonDb and addonDb.shouldImport  then
+                    print("Importing settings for addon: " .. addonName)
                     addonModule:Import(self.db.global.ImportedStrings[addonName], profileName)
                 end
             end
