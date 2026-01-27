@@ -47,3 +47,4 @@ addons/clicked.lua
 addons/clique.lua
 addons/healbot.lua
 addons/senseiClassResourceBar.lua
+addons/betterCooldownManager.lua
