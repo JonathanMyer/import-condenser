@@ -27,6 +27,13 @@ libs\AceSerializer-3.0\AceSerializer-3.0.xml
 
 # Addon code
 main.lua
+constants.lua
+core.lua
+options.lua
+serialization.lua
+import.lua
+export.lua
+utils.lua
 addons/platynator.lua
 addons/baganator.lua
 addons/editMode.lua
