@@ -199,7 +199,16 @@ function ns.GenerateImportSection(addonName, order)
                 type = "toggle",
                 name = "Import?",
                 desc = "Do you want to import settings for " .. addonName .. "?",
+                hidden = function()
+                    return not readyToImport
+                end,
+                disabled = function()
+                    return not readyToImport
+                end,
                 get = function()
+                    if not readyToImport then
+                        return false
+                    end
                     local addonDb = getAddonDb()
                     if not addonDb then
                         return false
@@ -210,6 +219,9 @@ function ns.GenerateImportSection(addonName, order)
                     return addonDb.shouldImport
                 end,
                 set = function(info, value)
+                    if not readyToImport then
+                        return
+                    end
                     local addonDb = getAddonDb()
                     if not addonDb then
                         return
