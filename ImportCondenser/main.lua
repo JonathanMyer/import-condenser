@@ -380,7 +380,7 @@ function ns.SetupOptions(self)
     local tempImportText = ""
     local options = {
         type = "group",
-        name = ADDON_NAME,
+        name = "Import Condenser",
         childGroups = "tab",
         args = {
             importTab = {
