@@ -381,6 +381,7 @@ function ns.SetupOptions(self)
     local options = {
         type = "group",
         name = ADDON_NAME,
+        childGroups = "tab",
         args = {
             importTab = {
                 type = "group",
@@ -389,11 +390,6 @@ function ns.SetupOptions(self)
                 childGroups = "tab",
                 order = 1,
                 args = {
-                    header = {
-                        type = "header",
-                        name = "Import Settings",
-                        order = 0,
-                    },
                     importProfileName = {
                         type = "input",
                         name = "Profile Name Override",
@@ -461,11 +457,6 @@ function ns.SetupOptions(self)
                 order = 2,
                 childGroups = "tab",
                 args = {
-                    header = {
-                        type = "header",
-                        name = "Export Settings",
-                        order = 0,
-                    },
                     profileName = {
                         type = "input",
                         name = "Export Profile Name",
