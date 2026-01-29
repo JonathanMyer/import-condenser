@@ -2,7 +2,7 @@
 ## Title: Import Condenser
 ## Notes: Import once for multiple different supported addons.
 ## Author: Ryepizor
-## Version: 1.16
+## Version: 1.17
 ## SavedVariables: ImportCondenserDB
 ## OptionalDeps: Ace3, LibSharedMedia-3.0
 ## X-TaintLess-DisableMitigations: CUF_PROFILE_ACTIVATE_PATCH_VERSION=1
