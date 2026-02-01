@@ -51,3 +51,37 @@ ImportCondenser.ClassNames = {
     [12] = "DemonHunter",
     [13] = "Evoker"
 }
+
+function ImportCondenser:ReplaceDelimitedTokenValue(inputStr, token, newValue)
+    if type(inputStr) ~= "string" then
+        return inputStr
+    end
+    if type(token) ~= "string" or token == "" then
+        return inputStr
+    end
+
+    newValue = tostring(newValue or "")
+
+    local lastStart, lastEnd
+    local searchFrom = 1
+    while true do
+        local s, e = string.find(inputStr, token, searchFrom, true)
+        if not s then
+            break
+        end
+        lastStart, lastEnd = s, e
+        searchFrom = e + 1
+    end
+
+    if not lastEnd then
+        return inputStr
+    end
+
+    local afterTokenIndex = lastEnd + 1
+    local nextDelimStart = string.find(inputStr, "::", afterTokenIndex, true)
+    if nextDelimStart then
+        return string.sub(inputStr, 1, lastEnd) .. newValue .. string.sub(inputStr, nextDelimStart)
+    end
+
+    return string.sub(inputStr, 1, lastEnd) .. newValue
+end

@@ -91,7 +91,8 @@ function ns.GenerateImportSection(addonName, order)
                 loaded = {
                     type = "description",
                     name = function()
-                        return ImportCondenser:IsAddonLoaded(addonName) and "|cff00ff00Loaded|r" or "|cffff0000Not Loaded|r"
+                        return ImportCondenser:IsAddonLoaded(addonName) and "|cff00ff00Loaded|r" or
+                            "|cffff0000Not Loaded|r"
                     end,
                     width = 0.5,
                     order = 2,
@@ -104,7 +105,8 @@ function ns.GenerateImportSection(addonName, order)
                             if issues and type(issues) == "string" then
                                 return "|cffff0000" .. issues .. "|r"
                             elseif issues and type(issues) == "table" and issues.message then
-                                return issues.message and "|cffffff00" .. issues.message .. "|r" or "|cffffff00Options available|r"
+                                return issues.message and "|cffffff00" .. issues.message .. "|r" or
+                                    "|cffffff00Options available|r"
                             end
                         end
                         return readyToImport and "|cff00ff00Ready to Import|r" or "|cffaaaaaa---"
@@ -177,10 +179,12 @@ function ns.GenerateImportSection(addonName, order)
                                     name = optionName,
                                     desc = optionDesc,
                                     get = function()
-                                        return addonDb.selectedImportOptions[storeAsLower and optionName:lower() or optionName] or false
+                                        return addonDb.selectedImportOptions
+                                            [storeAsLower and optionName:lower() or optionName] or false
                                     end,
                                     set = function(info, value)
-                                        addonDb.selectedImportOptions[storeAsLower and optionName:lower() or optionName] = value
+                                        addonDb.selectedImportOptions[storeAsLower and optionName:lower() or optionName] =
+                                            value
                                     end,
                                     width = .75,
                                     order = i,
@@ -338,7 +342,8 @@ function ns.SetupOptions(self)
                     importProfileName = {
                         type = "input",
                         name = "Profile Name Override",
-                        desc = "Enter a name for the imported profile. If empty, it will use the name that was in the export. Some addons do not support new profile names.",
+                        desc =
+                        "Enter a name for the imported profile. If empty, it will use the name that was in the export. Some addons do not support new profile names.",
                         get = function(info)
                             return self.db.global.importProfileName or nil
                         end,
@@ -350,7 +355,8 @@ function ns.SetupOptions(self)
                     importProfile = {
                         type = "input",
                         name = "Input String",
-                        desc = "Paste a profile string here to import. Only strings exported from this addon are supported.",
+                        desc =
+                        "Paste a profile string here to import. Only strings exported from this addon are supported.",
                         width = "full",
                         get = function()
                             return tempImportText
