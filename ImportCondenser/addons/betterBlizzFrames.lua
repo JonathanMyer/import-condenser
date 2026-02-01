@@ -11,7 +11,7 @@ end
 
 function ImportCondenser.BetterBlizzFrames:Import(importString)
     local bbfDB = _G.BetterBlizzFramesDB
-    if type(_G.BBF) == "table" and type(_G.BBF.ImportProfile) == "function" then
+    if bbfDB and type(_G.BBF) == "table" and type(_G.BBF.ImportProfile) == "function" then
         local profileData, errorMessage = _G.BBF.OldImportProfile(importString, "fullProfile")
         if errorMessage then
             _G.BBF.Print(_G.BBF.L["Print_Error_Importing"] .. "Full Profile" .. ": " .. tostring(errorMessage))
