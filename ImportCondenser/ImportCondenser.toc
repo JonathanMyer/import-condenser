@@ -59,3 +59,4 @@ addons/grid2.lua
 addons/elvUI.lua
 addons/betterBlizzFrames.lua
 addons/betterBlizzPlates.lua
+addons/enhanceQoL.lua
