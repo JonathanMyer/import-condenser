@@ -47,7 +47,8 @@ function ImportCondenser:Import()
     end
 
     local importedStrings = self.db.global.ImportedStrings
-    local profileName = (self.db.global.importProfileName ~= "" and self.db.global.importProfileName) or importedStrings.profileName or "ImportedProfile"
+    local profileName = (self.db.global.importProfileName ~= "" and self.db.global.importProfileName) or
+    importedStrings.profileName or "ImportedProfile"
     print("Starting import for profile: " .. profileName)
 
     local addons = ns.addons or {}
@@ -65,7 +66,7 @@ function ImportCondenser:Import()
                 addonDb.shouldImport = true
             end
 
-            if addonModule and addonModule.Import and addonDb.shouldImport then
+            if addonModule and addonModule.Import and addonDb.shouldImport and ImportCondenser:IsAddonLoaded(addonName) then
                 print("Importing settings for addon: " .. addonName)
                 addonModule:Import(addonPayload, profileName)
             end
