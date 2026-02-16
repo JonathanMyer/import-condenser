@@ -1,8 +1,5 @@
 local ADDON_NAME, ns             = ...
 local ImportCondenser            = ns.Addon
-local AceAddon                   = LibStub("AceAddon-3.0", true)
-local AceDBOptions               = LibStub("AceDBOptions-3.0", true)
-local LibDualSpec                = LibStub("LibDualSpec-1.0", true)
 
 ImportCondenser.MissingClassBuff = {}
 
