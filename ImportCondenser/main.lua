@@ -9,7 +9,7 @@ local ImportCondenser = AceAddon:NewAddon(
 )
 
 ns.Addon = ImportCondenser
-ImportCondenser.DEBUG = true
+ImportCondenser.DEBUG = false
 
 -- Shared references for other modules
 ns.LibDualSpec = LibStub("LibDualSpec-1.0", true)
