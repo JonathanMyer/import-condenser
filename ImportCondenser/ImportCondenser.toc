@@ -61,3 +61,4 @@ addons/betterBlizzFrames.lua
 addons/betterBlizzPlates.lua
 addons/enhanceQoL.lua
 addons/missingClassBuff.lua
+addons/buffReminders.lua
