@@ -126,7 +126,6 @@ function ImportCondenser:ExportAceAddon(addonName)
 end
 
 function ImportCondenser:ImportAceAddon(addonName, importStr, profileName)
-    print("Importing profile for addon: " .. addonName)
     local addon = AceAddon and AceAddon:GetAddon(addonName, true)
     if not addon then
         return

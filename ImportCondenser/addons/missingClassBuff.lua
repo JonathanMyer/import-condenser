@@ -8,7 +8,6 @@ function ImportCondenser.MissingClassBuff:GetExportOptions()
 end
 
 function ImportCondenser.MissingClassBuff:Import(importStr, profileName)
-    print("Importing MissingClassBuff profile: " .. profileName)
     ImportCondenser:ImportAceAddon("MissingClassBuff", importStr, profileName)
 end
 
