@@ -1,4 +1,4 @@
-## Interface: 120000
+﻿## Interface: 120000
 ## Title: Import Condenser
 ## Notes: Import once for multiple different supported addons.
 ## Author: Ryepizor
@@ -34,31 +34,33 @@ serialization.lua
 import.lua
 export.lua
 utils.lua
-addons/platynator.lua
 addons/baganator.lua
-addons/editMode.lua
-addons/plater.lua
-addons/details.lua
 addons/bartender.lua
-addons/twintopInsanityBar.lua
-addons/dandersFrames.lua
-addons/unhaltedUnitFrames.lua
-addons/cooldownManager.lua
-addons/playersCastbars.lua
-addons/tellMeWhen.lua
-addons/bigWigs.lua
-addons/midnightSimpleUnitFrames.lua
-addons/cooldownManagerCentered.lua
-addons/healthBarColor.lua
-addons/clicked.lua
-addons/clique.lua
-addons/healbot.lua
-addons/senseiClassResourceBar.lua
-addons/betterCooldownManager.lua
-addons/grid2.lua
-addons/elvUI.lua
 addons/betterBlizzFrames.lua
 addons/betterBlizzPlates.lua
-addons/enhanceQoL.lua
-addons/missingClassBuff.lua
+addons/betterCooldownManager.lua
+addons/bigWigs.lua
 addons/buffReminders.lua
+addons/clicked.lua
+addons/clique.lua
+addons/cooldownManager.lua
+addons/cooldownManagerCentered.lua
+addons/dandersFrames.lua
+addons/details.lua
+addons/editMode.lua
+addons/elvUI.lua
+addons/enhanceQoL.lua
+addons/frameColor.lua
+addons/grid2.lua
+addons/healbot.lua
+addons/healthBarColor.lua
+addons/midnightSimpleUnitFrames.lua
+addons/missingClassBuff.lua
+addons/plater.lua
+addons/platynator.lua
+addons/playersCastbars.lua
+addons/senseiClassResourceBar.lua
+addons/tellMeWhen.lua
+addons/template.lua
+addons/twintopInsanityBar.lua
+addons/unhaltedUnitFrames.lua
