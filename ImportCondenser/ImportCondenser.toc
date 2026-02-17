@@ -1,4 +1,4 @@
-## Interface: 120000
+﻿## Interface: 120000
 ## Title: Import Condenser
 ## Notes: Import once for multiple different supported addons.
 ## Author: Ryepizor
@@ -52,6 +52,7 @@ addons/elvUI.lua
 addons/enhanceQoL.lua
 addons/frameColor.lua
 addons/grid2.lua
+addons/harreksAdvancedRaidFrames.lua
 addons/healbot.lua
 addons/healthBarColor.lua
 addons/midnightSimpleUnitFrames.lua
